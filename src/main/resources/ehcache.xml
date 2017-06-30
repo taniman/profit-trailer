@@ -1,0 +1,48 @@
+<ehcache xmlms:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ehcache.xsd">
+    <diskStore path="cache" />
+    <cache
+            name="tradeHistory"
+            maxElementsInMemory="10000"
+            eternal="false"
+            timeToIdleSeconds="0"
+            timeToLiveSeconds="0"
+            overflowToDisk="false"
+            memoryStoreEvictionPolicy="LFU" />
+
+    <cache
+            name="openOrders"
+            maxElementsInMemory="10000"
+            eternal="false"
+            timeToIdleSeconds="0"
+            timeToLiveSeconds="0"
+            overflowToDisk="false"
+            memoryStoreEvictionPolicy="LFU" />
+
+    <cache
+            name="completeBalances"
+            maxElementsInMemory="10000"
+            eternal="false"
+            timeToIdleSeconds="0"
+            timeToLiveSeconds="0"
+            overflowToDisk="false"
+            memoryStoreEvictionPolicy="LFU" />
+
+    <cache
+            name="chartData"
+            maxElementsInMemory="10000"
+            eternal="false"
+            timeToIdleSeconds="0"
+            timeToLiveSeconds="10"
+            overflowToDisk="false"
+            memoryStoreEvictionPolicy="LFU" />
+
+    <cache
+            name="ticker"
+            maxElementsInMemory="10000"
+            eternal="false"
+            timeToIdleSeconds="0"
+            timeToLiveSeconds="0"
+            overflowToDisk="false"
+            memoryStoreEvictionPolicy="LFU" />
+
+</ehcache>
