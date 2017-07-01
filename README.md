@@ -32,3 +32,15 @@ Once you change the host file the poloniex.com website will not work properly an
 
 
 Now run your bots and enjoy!
+
+<br />
+<br />
+
+# Donations
+If you would like to send me a donation, here are my cryptocurrency addresses:
+
+BTC: 1BGe9qmFUj3BrpjQKRASxVFHEnBeLoCNX1
+
+ETH: 0x3ad4048c71afeebeb88dad665be6cbdfcb63c526
+
+LTC: LTfW6rp29GepiLPvC1JSfgZNcxuxCmrsW7
