@@ -69,7 +69,7 @@ public class GunbotProxyController {
 		JsonElement jelement = new JsonParser().parse(result);
 		JsonObject jobject = jelement.getAsJsonObject();
 		JsonArray jarray = jobject.getAsJsonArray(currencyPair);
-		return  jarray.toString();
+		return jarray != null ? jarray.toString() : "[]";
 	}
 
 	@RequestMapping(value = "/tradingApi/**", params = "command=returnTradeHistory")
@@ -82,7 +82,7 @@ public class GunbotProxyController {
 		JsonElement jelement = new JsonParser().parse(result);
 		JsonObject jobject = jelement.getAsJsonObject();
 		JsonArray jarray = jobject.getAsJsonArray(currencyPair);
-		return  jarray != null ? jarray.toString() : "[]";
+		return jarray != null ? jarray.toString() : "[]";
 
 	}
 
