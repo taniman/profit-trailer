@@ -76,8 +76,8 @@ public class GunbotProxyService {
 
 		retryPolicy = new RetryPolicy()
 				.retryOn(failure -> failure instanceof Exception)
-				.withDelay(300, TimeUnit.MILLISECONDS)
-				.withMaxRetries(10);
+				.withDelay(500, TimeUnit.MILLISECONDS)
+				.withMaxRetries(6);
 	}
 
 	//@Cacheable(value = "BBChartData", key = "#currencyPair")
