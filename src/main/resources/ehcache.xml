@@ -45,4 +45,13 @@
             overflowToDisk="false"
             memoryStoreEvictionPolicy="LFU" />
 
+    <cache
+            name="buyOrderProtection"
+            maxElementsInMemory="10000"
+            eternal="false"
+            timeToIdleSeconds="30"
+            timeToLiveSeconds="30"
+            overflowToDisk="false"
+            memoryStoreEvictionPolicy="LFU" />
+
 </ehcache>

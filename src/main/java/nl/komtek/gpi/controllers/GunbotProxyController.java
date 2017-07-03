@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import nl.komtek.gpi.services.GunbotProxyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +23,8 @@ public class GunbotProxyController {
 
 	@Autowired
 	private GunbotProxyService gunbotProxyService;
+	@Value("${doubleBuyProtection:false}")
+	private boolean doubleBuyProtection;
 
 	@RequestMapping(value = "/public/**")
 	@ResponseBody
@@ -57,15 +60,26 @@ public class GunbotProxyController {
 	@RequestMapping(value = "/tradingApi/**", params = "command=returnCompleteBalances")
 	@ResponseBody
 	public String tradingRequestCompleteBalances(HttpServletRequest request) {
-		return gunbotProxyService.getCompleteBalances();
+
+		String market = "default";
+		if (gunbotProxyService.isUsingMultipleMarkets()) {
+			String key = request.getHeader("key");
+			market = gunbotProxyService.getMarket(key);
+		}
+		return gunbotProxyService.getCompleteBalances(market);
 	}
 
 	@RequestMapping(value = "/tradingApi/**", params = "command=returnOpenOrders")
 	@ResponseBody
 	public String tradingRequestOpenOrders(HttpServletRequest request,
 	                                       @RequestParam String currencyPair) {
+		String market = "default";
+		if (gunbotProxyService.isUsingMultipleMarkets()) {
+			String key = request.getHeader("key");
+			market = gunbotProxyService.getMarket(key);
+		}
+		String result = gunbotProxyService.getOpenOrders(market);
 
-		String result = gunbotProxyService.getOpenOrders();
 		JsonElement jelement = new JsonParser().parse(result);
 		JsonObject jobject = jelement.getAsJsonObject();
 		JsonArray jarray = jobject.getAsJsonArray(currencyPair);
@@ -77,7 +91,12 @@ public class GunbotProxyController {
 	public String tradingRequestTradeHistory(HttpServletRequest request,
 	                                         @RequestParam String currencyPair) {
 
-		String result = gunbotProxyService.getTradeHistory();
+		String market = "default";
+		if (gunbotProxyService.isUsingMultipleMarkets()) {
+			String key = request.getHeader("key");
+			market = gunbotProxyService.getMarket(key);
+		}
+		String result = gunbotProxyService.getTradeHistory(market);
 
 		JsonElement jelement = new JsonParser().parse(result);
 		JsonObject jobject = jelement.getAsJsonObject();
@@ -91,7 +110,8 @@ public class GunbotProxyController {
 	public String tradingRequestCancelOrder(HttpServletRequest request,
 	                                        @RequestParam String orderNumber) {
 
-		return gunbotProxyService.cancelOrder(orderNumber);
+		String key = request.getHeader("key");
+		return gunbotProxyService.cancelOrder(key, orderNumber);
 	}
 
 	@RequestMapping(value = "/tradingApi/**", params = "command=sell")
@@ -100,8 +120,8 @@ public class GunbotProxyController {
 	                                 @RequestParam String currencyPair,
 	                                 @RequestParam BigDecimal rate,
 	                                 @RequestParam BigDecimal amount) {
-
-		return gunbotProxyService.sellOrder(currencyPair, rate, amount);
+		String key = request.getHeader("key");
+		return gunbotProxyService.sellOrder(key, currencyPair, rate, amount);
 	}
 
 	@RequestMapping(value = "/tradingApi/**", params = "command=buy")
@@ -111,7 +131,11 @@ public class GunbotProxyController {
 	                                @RequestParam BigDecimal rate,
 	                                @RequestParam BigDecimal amount) {
 
-		return gunbotProxyService.buyOrder(currencyPair, rate, amount);
-
+		String key = request.getHeader("key");
+		if (doubleBuyProtection) {
+			return gunbotProxyService.buyOrderWithProtection(key, currencyPair, rate, amount);
+		} else {
+			return gunbotProxyService.buyOrder(key, currencyPair, rate, amount);
+		}
 	}
 }

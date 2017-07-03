@@ -57,7 +57,7 @@ public class MonitoringController {
 			monitoringDatas.add(gson.fromJson(new String(data), MonitoringData.class));
 		}
 		modelMap.put("monitoringDatas", monitoringDatas);
-		modelMap.put("balance", gunbotProxyService.getBTCBalance());
+		modelMap.put("balance", gunbotProxyService.getBTCBalance("default"));
 		return new ModelAndView("index",modelMap);
 	}
 }
