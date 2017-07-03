@@ -6,7 +6,9 @@ If you have questions after reading the readme
 https://t.me/joinchat/FWYlMg51hhEH06az2d_58g
 <br />
 # How to run
-Download the released jar file or compile your own using the source code <br />
+Download the latest released jar file or compile your own using the source code 
+https://github.com/taniman/gunbotproxycommunity/releases
+<br />
 Put the jar file in a directory <br />
 Put application.properties in the smae directory and fill in your apiKeys and secrets <br />
 Open ALLPAIRS-params.js and at the botom after module.exports = config; put the following line <br />
@@ -14,7 +16,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";<br />
 <br />
 To be able to run the application you need Java 8 <br />
 Open a terminal or command prompt and type <br />
-java -jar GunbotProxyCommunity-0.9.0.jar <br />
+java -jar GunbotProxyCommunity-x.x.x.jar <br />
 <br />
 If you did everything correctly the application will start without giving you any error messages.<br />
 Open a web browser and go to <br />
