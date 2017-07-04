@@ -251,7 +251,8 @@ public class GunbotProxyService {
 		return result;
 	}
 
-	@Caching(evict = {@CacheEvict(value = "openOrders"), @CacheEvict(value = "completeBalances")})
+	@Caching(evict = {@CacheEvict(value = "openOrders", allEntries = true),
+			@CacheEvict(value = "completeBalances", allEntries = true)})
 	public String cancelOrder(String key, String orderNumber) {
 		logger.debug("Canceling an order");
 		PoloniexTradingAPIClient tmpTradingAPIClient;
@@ -268,7 +269,8 @@ public class GunbotProxyService {
 		return result;
 	}
 
-	@Caching(evict = {@CacheEvict(value = "openOrders"), @CacheEvict(value = "completeBalances")})
+	@Caching(evict = {@CacheEvict(value = "openOrders", allEntries = true),
+			@CacheEvict(value = "completeBalances", allEntries = true)})
 	public synchronized String buyOrder(String key, String currencyPair, BigDecimal buyPrice, BigDecimal amount) {
 		PoloniexTradingAPIClient tmpTradingAPIClient;
 		if (isUsingMultipleMarkets()) {
@@ -285,7 +287,8 @@ public class GunbotProxyService {
 	}
 
 	@Cacheable(value = "buyOrderProtection", key = "#currencyPair")
-	@Caching(evict = {@CacheEvict(value = "openOrders"), @CacheEvict(value = "completeBalances")})
+	@Caching(evict = {@CacheEvict(value = "openOrders", allEntries = true),
+			@CacheEvict(value = "completeBalances", allEntries = true)})
 	public synchronized String buyOrderWithProtection(String key, String currencyPair, BigDecimal buyPrice, BigDecimal amount) {
 		PoloniexTradingAPIClient tmpTradingAPIClient;
 		if (isUsingMultipleMarkets()) {
@@ -301,7 +304,8 @@ public class GunbotProxyService {
 		return result;
 	}
 
-	@Caching(evict = {@CacheEvict(value = "openOrders"), @CacheEvict(value = "completeBalances")})
+	@Caching(evict = {@CacheEvict(value = "openOrders", allEntries = true),
+			@CacheEvict(value = "completeBalances", allEntries = true)})
 	public synchronized String sellOrder(String key, String currencyPair, BigDecimal buyPrice, BigDecimal amount) {
 		PoloniexTradingAPIClient tmpTradingAPIClient;
 		if (isUsingMultipleMarkets()) {
