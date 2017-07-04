@@ -10,7 +10,7 @@ Download the latest released jar file or compile your own using the source code
 https://github.com/taniman/gunbotproxycommunity/releases
 <br />
 Put the jar file in a directory <br />
-Put application.properties in the smae directory and fill in your apiKeys and secrets <br />
+Put application.properties in the same directory and fill in your apiKeys and secrets <br />
 Open ALLPAIRS-params.js and at the botom after module.exports = config; put the following line <br />
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";<br />
 <br />
