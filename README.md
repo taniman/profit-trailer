@@ -3,7 +3,7 @@ Free Proxy for Gunbot on Poloniex
 <br />
 # Join the telegram group
 If you have questions after reading the readme
-https://t.me/joinchat/FWYlMg51hhEH06az2d_58g
+https://t.me/joinchat/FWYlMkKK-mkrSuj836ehug
 <br />
 # How to run
 Download the latest released jar file or compile your own using the source code 
