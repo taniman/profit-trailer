@@ -35,6 +35,8 @@ public class Application {
 
 	@Value("${server.additionalPort:8081}")
 	private int additionalPort;
+	@Value("${server.address:0.0.0.0}")
+	private String serverAddress;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
@@ -75,6 +77,9 @@ public class Application {
 		Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
 		connector.setScheme("http");
 		connector.setPort(additionalPort);
+		if (!serverAddress.equals("0.0.0.0")) {
+			connector.setAttribute("address", serverAddress);
+		}
 		return connector;
 	}
 }

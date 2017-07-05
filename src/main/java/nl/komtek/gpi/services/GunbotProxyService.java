@@ -65,7 +65,6 @@ public class GunbotProxyService {
 				return;
 			}
 		} else {
-			logger.info("Running in multimarket MODE!");
 			if (!createMarketDefaultApiClients("BTC")) {
 				return;
 			}
