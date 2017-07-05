@@ -8,6 +8,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.jodah.failsafe.Failsafe;
 import net.jodah.failsafe.RetryPolicy;
+import nl.komtek.gpi.utils.ProxyHandledException;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -155,7 +157,6 @@ public class GunbotProxyService {
 	@Cacheable(value = "chartData", key = "#currencyPair")
 	public String getChartData(String currencyPair, String start, long period) {
 
-		logger.debug("chartData: " + currencyPair + " -- start:" + start + " -- period:" + period);
 		long startLong = 0;
 		if (start.indexOf(".") > 0) {
 			startLong = Long.valueOf(start.substring(0, start.indexOf(".")));
@@ -166,7 +167,9 @@ public class GunbotProxyService {
 		while (true) {
 			try {
 				String result = publicClient.getChartData(currencyPair, period, startLong);
-				return analyzeResult(result);
+				result = analyzeResult(result);
+				logger.debug("chartData: " + currencyPair + " -- start:" + start + " -- period:" + period + " -- " + result);
+				return result;
 			} catch (Exception e) {
 				handleException(e);
 			}
@@ -183,7 +186,12 @@ public class GunbotProxyService {
 		String result = Failsafe.with(retryPolicy)
 				.onFailedAttempt(this::handleException)
 				.get(() -> analyzeResult(publicClient.returnTicker()));
-		logger.debug("ticker: " + result);
+
+		if (logger.getLevel().isLessSpecificThan(Level.DEBUG)) {
+			logger.info("ticker updated");
+		} else {
+			logger.info("ticker: " + result);
+		}
 		return result;
 	}
 
@@ -346,20 +354,20 @@ public class GunbotProxyService {
 
 	private String analyzeResult(String result) {
 		if (result != null && result.contains("Nonce")) {
-			throw new RuntimeException("nonce error: " + result);
+			throw new ProxyHandledException("nonce error: " + result);
 		} else if (result == null) {
-			throw new RuntimeException("No value was returned");
+			throw new ProxyHandledException("No value was returned");
 		}
 		return result;
 	}
 
 	private void handleException(Throwable e) {
-		if (!(e instanceof RuntimeException)) {
-			logger.error(e.toString());
+		if (e instanceof ProxyHandledException) {
+			logger.debug(e.toString());
 		} else if (e instanceof NullPointerException) {
 			logger.error("Something is really wrong", e);
 		} else {
-			logger.debug(e.toString());
+			logger.error(e.toString());
 		}
 	}
 

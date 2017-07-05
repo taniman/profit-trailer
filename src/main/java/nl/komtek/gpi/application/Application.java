@@ -14,13 +14,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 
-import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Elroy on 29-6-2017.
@@ -56,13 +55,8 @@ public class Application {
 	}
 
 	@Bean
-	public Executor taskExecutor() {
-		return new SimpleAsyncTaskExecutor();
-	}
-
-	@Bean
 	public TaskScheduler taskScheduler() {
-		return new ConcurrentTaskScheduler();
+		return new ConcurrentTaskScheduler(Executors.newScheduledThreadPool(5));
 	}
 
 	@Bean

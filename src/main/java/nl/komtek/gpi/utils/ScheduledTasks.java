@@ -18,7 +18,7 @@ public class ScheduledTasks {
 	@Autowired
 	private GunbotProxyService gunbotProxyService;
 
-	@Scheduled(fixedDelay = Long.MAX_VALUE)
+	@Scheduled(fixedRate = Long.MAX_VALUE)
 	public void itWorks() {
 		if (gunbotProxyService.isUsingMultipleMarkets()) {
 			logger.info("Running in multimarket MODE!");
