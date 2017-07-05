@@ -98,6 +98,9 @@ public class GunbotProxyController {
 		}
 		String result = gunbotProxyService.getTradeHistory(market);
 
+		if (result.equals("[]")){
+			return result;
+		}
 		JsonElement jelement = new JsonParser().parse(result);
 		JsonObject jobject = jelement.getAsJsonObject();
 		JsonArray jarray = jobject.getAsJsonArray(currencyPair);
