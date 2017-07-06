@@ -28,105 +28,162 @@ public class ScheduledTasks {
 
 	@Scheduled(fixedDelay = 2000)
 	public void updateTicker() {
-		gunbotProxyService.getTickerScheduled();
+		try {
+			gunbotProxyService.getTickerScheduled();
+		} catch (Exception e) {
+			logger.error(e);
+		}
 	}
 
 	@Scheduled(fixedDelay = 9000)
 	public void updateCompleteBalances() {
-		String market = "default";
-		if (gunbotProxyService.isUsingMultipleMarkets()) {
-			market = "BTC";
+
+		try {
+			String market = "default";
+			if (gunbotProxyService.isUsingMultipleMarkets()) {
+				market = "BTC";
+			}
+			gunbotProxyService.getCompleteBalancesScheduled(market);
+		} catch (Exception e) {
+			logger.error(e);
 		}
-		gunbotProxyService.getCompleteBalancesScheduled(market);
 	}
 
 	@Scheduled(fixedDelay = 9200)
 	public void updateCompleteBalancesETH() {
-		if (gunbotProxyService.isActiveMarket("ETH")) {
-			gunbotProxyService.getCompleteBalancesScheduled("ETH");
+		try {
+			if (gunbotProxyService.isActiveMarket("ETH")) {
+				gunbotProxyService.getCompleteBalancesScheduled("ETH");
+			}
+		} catch (Exception e) {
+			logger.error(e);
 		}
 	}
 
 	@Scheduled(fixedDelay = 9400)
 	public void updateCompleteBalancesXMR() {
-		if (gunbotProxyService.isActiveMarket("XMR")) {
-			gunbotProxyService.getCompleteBalancesScheduled("XMR");
+		try {
+			if (gunbotProxyService.isActiveMarket("XMR")) {
+				gunbotProxyService.getCompleteBalancesScheduled("XMR");
+			}
+		} catch (Exception e) {
+			logger.error(e);
 		}
 	}
 
 	@Scheduled(fixedDelay = 9600)
 	public void updateCompleteBalancesUSDT() {
-		if (gunbotProxyService.isActiveMarket("USDT")) {
-			gunbotProxyService.getCompleteBalancesScheduled("USDT");
+		try {
+			if (gunbotProxyService.isActiveMarket("USDT")) {
+				gunbotProxyService.getCompleteBalancesScheduled("USDT");
+			}
+		} catch (Exception e) {
+			logger.error(e);
 		}
 	}
 
 	@Scheduled(fixedDelay = 1500)
 	public void updateTradeHistory() {
-		String market = "default";
-		if (gunbotProxyService.isUsingMultipleMarkets()) {
-			market = "BTC";
+		try {
+			String market = "default";
+			if (gunbotProxyService.isUsingMultipleMarkets()) {
+				market = "BTC";
+			}
+			gunbotProxyService.getTradeHistoryScheduled(market);
+		} catch (Exception e) {
+			logger.error(e);
 		}
-		gunbotProxyService.getTradeHistoryScheduled(market);
 	}
 
 	@Scheduled(fixedDelay = 1550)
 	public void updateTradeHistoryETH() {
-		if (gunbotProxyService.isActiveMarket("ETH")) {
-			gunbotProxyService.getTradeHistoryScheduled("ETH");
+		try {
+			if (gunbotProxyService.isActiveMarket("ETH")) {
+				gunbotProxyService.getTradeHistoryScheduled("ETH");
+			}
+		} catch (Exception e) {
+			logger.error(e);
 		}
 	}
 
 	@Scheduled(fixedDelay = 1600)
 	public void updateTradeHistoryXMR() {
-		if (gunbotProxyService.isActiveMarket("XMR")) {
-			gunbotProxyService.getTradeHistoryScheduled("XMR");
+		try {
+			if (gunbotProxyService.isActiveMarket("XMR")) {
+				gunbotProxyService.getTradeHistoryScheduled("XMR");
+			}
+		} catch (Exception e) {
+			logger.error(e);
 		}
 	}
 
 	@Scheduled(fixedDelay = 1650)
 	public void updateTradeHistoryUSDT() {
-		if (gunbotProxyService.isActiveMarket("USDT")) {
-			gunbotProxyService.getTradeHistoryScheduled("USDT");
+		try {
+			if (gunbotProxyService.isActiveMarket("USDT")) {
+				gunbotProxyService.getTradeHistoryScheduled("USDT");
+			}
+		} catch (Exception e) {
+			logger.error(e);
 		}
 	}
 
 	@Scheduled(fixedDelay = 2000)
 	public void updateOpenOrders() {
-		String market = "default";
-		if (gunbotProxyService.isUsingMultipleMarkets()) {
-			market = "BTC";
+		try {
+			String market = "default";
+			if (gunbotProxyService.isUsingMultipleMarkets()) {
+				market = "BTC";
+			}
+			gunbotProxyService.getOpenOrdersScheduled(market);
+		} catch (Exception e) {
+			logger.error(e);
 		}
-		gunbotProxyService.getOpenOrdersScheduled(market);
 	}
 
 	@Scheduled(fixedDelay = 2050)
 	public void updateOpenOrdersETH() {
-		if (gunbotProxyService.isActiveMarket("ETH")) {
-			gunbotProxyService.getOpenOrdersScheduled("ETH");
+		try {
+			if (gunbotProxyService.isActiveMarket("ETH")) {
+				gunbotProxyService.getOpenOrdersScheduled("ETH");
+			}
+		} catch (Exception e) {
+			logger.error(e);
 		}
 	}
 
 	@Scheduled(fixedDelay = 2100)
 	public void updateOpenOrdersXMR() {
-		if (gunbotProxyService.isActiveMarket("XMR")) {
-			gunbotProxyService.getOpenOrdersScheduled("XMR");
+		try {
+			if (gunbotProxyService.isActiveMarket("XMR")) {
+				gunbotProxyService.getOpenOrdersScheduled("XMR");
+			}
+		} catch (Exception e) {
+			logger.error(e);
 		}
 	}
 
 	@Scheduled(fixedDelay = 2150)
 	public void updateOpenOrdersUSDT() {
-		if (gunbotProxyService.isActiveMarket("USDT")) {
-			gunbotProxyService.getOpenOrdersScheduled("USDT");
+		try {
+			if (gunbotProxyService.isActiveMarket("USDT")) {
+				gunbotProxyService.getOpenOrdersScheduled("USDT");
+			}
+		} catch (Exception e) {
+			logger.error(e);
 		}
 	}
 
 	@Scheduled(fixedDelay = 10000)
 	public void updateBalances() {
-		String market = "default";
-		if (gunbotProxyService.isUsingMultipleMarkets()) {
-			market = "BTC";
+		try {
+			String market = "default";
+			if (gunbotProxyService.isUsingMultipleMarkets()) {
+				market = "BTC";
+			}
+			gunbotProxyService.getBalancesScheduled(market);
+		} catch (Exception e) {
+			logger.error(e);
 		}
-		gunbotProxyService.getBalancesScheduled(market);
 	}
 }
