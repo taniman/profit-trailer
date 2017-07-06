@@ -154,7 +154,7 @@ public class GunbotProxyService {
 		}
 	}
 
-	@Cacheable(value = "chartData", key = "#currencyPair")
+	@Cacheable(value = "chartData", key = "#currencyPair+#start")
 	public String getChartData(String currencyPair, String start, long period) {
 
 		long startLong = 0;
