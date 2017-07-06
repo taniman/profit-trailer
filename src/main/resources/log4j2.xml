@@ -17,7 +17,7 @@
         </RollingFile>
     </Appenders>
     <Loggers>
-        <Logger name="nl.komtek" level="debug" additivity="false">
+        <Logger name="nl.komtek" level="info" additivity="false">
             <AppenderRef ref="Console" level="info"/>
             <AppenderRef ref="RollingFile" level="debug"/>
         </Logger>
