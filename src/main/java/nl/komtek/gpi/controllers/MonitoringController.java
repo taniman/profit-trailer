@@ -43,21 +43,25 @@ public class MonitoringController {
 		Resource[] logResources = resourcePatternResolver.getResources(logFilePatern);
 
 		List<String> logPaths = new ArrayList<>();
-		for (Resource resource : logResources){
+		for (Resource resource : logResources) {
 			logPaths.add(resource.getFilename().replace("-log.txt", ""));
 		}
 
 		List<MonitoringData> monitoringDatas = new ArrayList<>();
 		for (Resource resource : saveResources) {
-			String tmpName = resource.getFilename().replace("-save.json","");
-			if (!logPaths.contains(tmpName)){
+			String tmpName = resource.getFilename().replace("-save.json", "");
+			if (!logPaths.contains(tmpName)) {
 				continue;
 			}
 			byte[] data = Files.readAllBytes(resource.getFile().toPath());
 			monitoringDatas.add(gson.fromJson(new String(data), MonitoringData.class));
 		}
 		modelMap.put("monitoringDatas", monitoringDatas);
-		modelMap.put("balance", gunbotProxyService.getBTCBalance("default"));
-		return new ModelAndView("index",modelMap);
+		String market = "default";
+		if (gunbotProxyService.isUsingMultipleMarkets()) {
+			market = "BTC";
+		}
+		modelMap.put("balance", gunbotProxyService.getBTCBalance(market));
+		return new ModelAndView("index", modelMap);
 	}
 }

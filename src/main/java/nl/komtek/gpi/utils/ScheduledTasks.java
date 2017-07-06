@@ -121,4 +121,12 @@ public class ScheduledTasks {
 		}
 	}
 
+	@Scheduled(fixedDelay = 10000)
+	public void updateBalances() {
+		String market = "default";
+		if (gunbotProxyService.isUsingMultipleMarkets()) {
+			market = "BTC";
+		}
+		gunbotProxyService.getBalancesScheduled(market);
+	}
 }

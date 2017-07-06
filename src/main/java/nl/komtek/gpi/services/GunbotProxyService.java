@@ -187,7 +187,7 @@ public class GunbotProxyService {
 				.onFailedAttempt(this::handleException)
 				.get(() -> analyzeResult(publicClient.returnTicker()));
 
-		if (logger.getLevel().isLessSpecificThan(Level.DEBUG)) {
+		if (logger.getLevel().isMoreSpecificThan(Level.INFO)) {
 			logger.info("ticker updated");
 		} else {
 			logger.info("ticker: " + result);
@@ -215,14 +215,6 @@ public class GunbotProxyService {
 		return getCompleteBalancesScheduled(market);
 	}
 
-	@Cacheable(value = "balances", key = "#market")
-	public double getBTCBalance(String market) {
-		String result = getBalancesScheduled(market);
-		JsonElement jsonElement = new JsonParser().parse(result);
-		JsonObject jsonObject = jsonElement.getAsJsonObject();
-		return jsonObject.get("BTC").getAsDouble();
-	}
-
 	@CachePut(value = "completeBalances", key = "#market")
 	public String getCompleteBalancesScheduled(String market) {
 		PoloniexTradingAPIClient tradingAPIClient = getMarketDefaultTradingClient(market);
@@ -233,14 +225,22 @@ public class GunbotProxyService {
 		return result;
 	}
 
-	@CachePut(value = "balances", key = "market")
-	public String getBalancesScheduled(String market) {
+	@Cacheable(value = "balances", key = "#market")
+	public double getBTCBalance(String market) {
+		return getBalancesScheduled(market);
+
+	}
+
+	@CachePut(value = "balances", key = "#market")
+	public double getBalancesScheduled(String market) {
 		PoloniexTradingAPIClient tradingAPIClient = getMarketDefaultTradingClient(market);
 		String result = Failsafe.with(retryPolicy)
 				.onFailedAttempt(this::handleException)
 				.get(() -> analyzeResult(tradingAPIClient.returnBalances()));
 		logger.debug("balances" + result);
-		return result;
+		JsonElement jsonElement = new JsonParser().parse(result);
+		JsonObject jsonObject = jsonElement.getAsJsonObject();
+		return jsonObject.get("BTC").getAsDouble();
 	}
 
 	@Cacheable(value = "openOrders", key = "#market", sync = true)

@@ -2,7 +2,7 @@
     <diskStore path="cache" />
     <cache
             name="tradeHistory"
-            maxElementsInMemory="10000"
+            maxElementsInMemory="500"
             eternal="false"
             timeToIdleSeconds="0"
             timeToLiveSeconds="0"
@@ -11,7 +11,7 @@
 
     <cache
             name="openOrders"
-            maxElementsInMemory="10000"
+            maxElementsInMemory="500"
             eternal="false"
             timeToIdleSeconds="0"
             timeToLiveSeconds="0"
@@ -20,7 +20,7 @@
 
     <cache
             name="completeBalances"
-            maxElementsInMemory="10000"
+            maxElementsInMemory="5"
             eternal="false"
             timeToIdleSeconds="0"
             timeToLiveSeconds="0"
@@ -29,7 +29,7 @@
 
     <cache
             name="chartData"
-            maxElementsInMemory="10000"
+            maxElementsInMemory="500"
             eternal="false"
             timeToIdleSeconds="0"
             timeToLiveSeconds="10"
@@ -38,7 +38,7 @@
 
     <cache
             name="ticker"
-            maxElementsInMemory="10000"
+            maxElementsInMemory="500"
             eternal="false"
             timeToIdleSeconds="0"
             timeToLiveSeconds="0"
@@ -47,10 +47,19 @@
 
     <cache
             name="buyOrderProtection"
-            maxElementsInMemory="10000"
+            maxElementsInMemory="500"
             eternal="false"
             timeToIdleSeconds="30"
             timeToLiveSeconds="30"
+            overflowToDisk="false"
+            memoryStoreEvictionPolicy="LFU" />
+
+    <cache
+            name="balances"
+            maxElementsInMemory="5"
+            eternal="false"
+            timeToIdleSeconds="0"
+            timeToLiveSeconds="0"
             overflowToDisk="false"
             memoryStoreEvictionPolicy="LFU" />
 
