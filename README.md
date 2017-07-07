@@ -31,6 +31,8 @@ On linux /etc/hosts <br />
 <br />
 Put the following <br />
 127.0.0.1	poloniex.com <br />
+
+# DO NOT! put www.poloniex.com in your hostfile. Currently proxy uses this to talk to polo
 <br />
 <br />
 # Warning
