@@ -32,9 +32,10 @@ On linux /etc/hosts <br />
 Put the following <br />
 127.0.0.1	poloniex.com <br />
 
-# DO NOT! put www.poloniex.com in your hostfile. Currently proxy uses this to talk to polo
+### DO NOT! put www.poloniex.com in your hostfile. Currently proxy uses this to talk to polo
 <br />
 <br />
+
 # Warning
 Please use the proxy on a VPS or machine that you do not use normally. <br />
 Once you change the host file the poloniex.com website will not work properly anymore. <br />
