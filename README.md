@@ -31,6 +31,11 @@ On linux /etc/hosts <br />
 <br />
 Put the following <br />
 127.0.0.1	poloniex.com <br />
+and save your host file.<br />
+
+Now open cmd or terminal<br />
+type: ping poloniex.com and press enter<br />
+It should return "reply from 127.0.0.1"<br />
 
 ### DO NOT! put www.poloniex.com in your hostfile. Currently proxy uses this to talk to polo
 <br />
