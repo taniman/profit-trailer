@@ -37,7 +37,7 @@ and save your host file.<br />
 # Final test
 Open a web browser again and again go to : <br />
 http://localhost:8081/checkSetup/ <br />
-All rows should say 'Looking good!'
+All rows should say 'Looking good!' <br />
 If this is not the case, than you have an error in your application.properties <br />
 <br />
 <br />
