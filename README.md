@@ -21,8 +21,9 @@ On OSX or some linux versions you might need to sudo su and then run the java -j
 <br />
 If you did everything correctly the application will start without giving you any error messages.<br />
 Open a web browser and go to <br />
-http://localhost:8081/public/ <br />
-It should return the text. "Intercepted". <br /> 
+http://localhost:8081/checkSetup/ <br />
+All rows except hostfile should say 'Looking good!'<br />
+If this is not the case, than you have an error in your application.properties <br />
 So everything is up and running. <br />
 <br />
 Now for the final step you need to edit your host file. <br />
@@ -33,11 +34,11 @@ Put the following <br />
 127.0.0.1	poloniex.com <br />
 and save your host file.<br />
 
-Now open cmd or terminal<br />
-type: ping poloniex.com and press enter<br />
-It should return "reply from 127.0.0.1"<br />
-
-### DO NOT! put www.poloniex.com in your hostfile. Currently proxy uses this to talk to polo
+# Final test
+Open a web browser again and again go to : <br />
+http://localhost:8081/checkSetup/ <br />
+All rows should say 'Looking good!'
+If this is not the case, than you have an error in your application.properties <br />
 <br />
 <br />
 
