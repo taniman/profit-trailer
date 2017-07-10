@@ -9,6 +9,7 @@ import com.google.gson.JsonParser;
 import net.jodah.failsafe.Failsafe;
 import net.jodah.failsafe.RetryPolicy;
 import nl.komtek.gpi.utils.ProxyHandledException;
+import nl.komtek.gpi.utils.Util;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,7 +20,6 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -39,7 +39,7 @@ public class GunbotProxyService {
 	@Autowired
 	private ApplicationContext applicationContext;
 	@Autowired
-	Environment environment;
+	Util util;
 	private Map<String, PoloniexTradingAPIClient> poloniexDefaultAPIClients = new HashMap<>();
 	private Map<String, PoloniexTradingAPIClient> poloniexTradingAPIClients = new HashMap<>();
 	private Map<String, String> marketMapping = new HashMap<>();
@@ -55,17 +55,11 @@ public class GunbotProxyService {
 	private void initService() {
 
 		if (!createMarketMapping()) {
-			String apiKey = getEnvProperty("default_apiKey");
-			String apiSecret = getEnvProperty("default_apiSecret");
+			String apiKey = util.getEnvProperty("default_apiKey");
+			String apiSecret = util.getEnvProperty("default_apiSecret");
 			poloniexDefaultAPIClients.put("default", new PoloniexTradingAPIClient(apiKey, apiSecret));
-			if (poloniexDefaultAPIClients.get("default") == null) {
-				logger.error("The default apiKey and Secret is required");
-				SpringApplication.exit(applicationContext);
-				return;
-			}
-			if (!createDefaultTradingClients()) {
-				return;
-			}
+			createDefaultTradingClients();
+
 		} else {
 			if (!createMarketDefaultApiClients("BTC")) {
 				return;
@@ -91,8 +85,8 @@ public class GunbotProxyService {
 	}
 
 	private boolean createMarketDefaultApiClients(String market) {
-		String apiKey = getEnvProperty("default_" + market + "_apiKey");
-		String apiSecret = getEnvProperty("default_" + market + "_apiSecret");
+		String apiKey = util.getEnvProperty("default_" + market + "_apiKey");
+		String apiSecret = util.getEnvProperty("default_" + market + "_apiSecret");
 		if (!StringUtils.isEmpty(apiKey) && !StringUtils.isEmpty(apiSecret)) {
 			if (!marketMapping.values().contains(market)) {
 				logger.error(String.format("Please setup the %s market correctly", market));
@@ -110,8 +104,8 @@ public class GunbotProxyService {
 
 		for (String market : markets) {
 			for (int i = 1; i <= 10; i++) {
-				String apiKey = getEnvProperty(String.format("%s_apiKey%d", market, i));
-				String apiSecret = getEnvProperty(String.format("%s_apiSecret%d", market, i));
+				String apiKey = util.getEnvProperty(String.format("%s_apiKey%d", market, i));
+				String apiSecret = util.getEnvProperty(String.format("%s_apiSecret%d", market, i));
 				if (StringUtils.isEmpty(apiKey) || StringUtils.isEmpty(apiSecret)) {
 					break;
 				}
@@ -123,19 +117,15 @@ public class GunbotProxyService {
 	}
 
 	private boolean createDefaultTradingClients() {
-		for (int i = 1; i <= 100; i++) {
-			String apiKey = getEnvProperty(String.format("apiKey%d", i));
-			String apiSecret = getEnvProperty(String.format("apiSecret%d", i));
+		for (int i = 1; i <= 10; i++) {
+			String apiKey = util.getEnvProperty(String.format("apiKey%d", i));
+			String apiSecret = util.getEnvProperty(String.format("apiSecret%d", i));
 			if (apiKey == null || apiSecret == null) {
 				break;
 			}
 			poloniexTradingAPIClients.put(apiKey, new PoloniexTradingAPIClient(apiKey, apiSecret));
 		}
 
-		if (poloniexTradingAPIClients.size() == 0) {
-			logger.error("Please setup at least 1 other apiKey for a better experience");
-			SpringApplication.exit(applicationContext);
-		}
 		return poloniexTradingAPIClients.size() > 0;
 	}
 
@@ -329,7 +319,7 @@ public class GunbotProxyService {
 	}
 
 	private PoloniexTradingAPIClient getTradingClient(String currencyPair) {
-		String apiKey = getEnvProperty(currencyPair + "_apiKey");
+		String apiKey = util.getEnvProperty(currencyPair + "_apiKey");
 		if (apiKey != null) {
 			return poloniexTradingAPIClients.get(apiKey);
 		} else {
@@ -352,11 +342,13 @@ public class GunbotProxyService {
 		return tradingAPIClient;
 	}
 
-	private String analyzeResult(String result) {
-		if (result != null && result.contains("Nonce")) {
-			throw new ProxyHandledException("nonce error: " + result);
-		} else if (result == null) {
+	public String analyzeResult(String result) {
+		if (result == null) {
 			throw new ProxyHandledException("No value was returned");
+		} else if (result.contains("Nonce")) {
+			throw new ProxyHandledException("nonce error: " + result);
+		} else if (result.contains("error")) {
+			throw new RuntimeException(result);
 		}
 		return result;
 	}
@@ -396,8 +388,19 @@ public class GunbotProxyService {
 		return market;
 	}
 
-	private String getEnvProperty(String key) {
-		String value = StringUtils.trimAllWhitespace(environment.getProperty(key));
-		return StringUtils.replace(value, "\"", "");
+	public String checkDefaultKey(String market) {
+		PoloniexTradingAPIClient tradingAPIClient = getMarketDefaultTradingClient(market);
+		String result = Failsafe.with(retryPolicy)
+				.onFailedAttempt(this::handleException)
+				.get(() -> analyzeResult(tradingAPIClient.returnOpenOrders("ALL")));
+		return result;
+	}
+
+	public String checkTradingKey(String apiKey) {
+		PoloniexTradingAPIClient tradingAPIClient = poloniexTradingAPIClients.get(apiKey);
+		String result = Failsafe.with(retryPolicy)
+				.onFailedAttempt(this::handleException)
+				.get(() -> analyzeResult(tradingAPIClient.returnOpenOrders("ALL")));
+		return result;
 	}
 }
