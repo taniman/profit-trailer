@@ -9,6 +9,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
@@ -85,6 +86,22 @@ public class CheckSetupController {
 			}
 		} catch (UnknownHostException e) {
 			setupData.put("www.poloniex.com", e.getMessage());
+		}
+
+		String gunbotLocation = util.getEnvProperty("gunbot.location");
+		if (!StringUtils.isEmpty(gunbotLocation.length())) {
+			if (!gunbotLocation.startsWith("file://")) {
+				setupData.put("Gunbot location", "Your file location should start with 'file://'");
+			} else {
+				File file = new File(gunbotLocation);
+				if (file.exists()) {
+					setupData.put("Gunbot location", "Looking good!");
+				} else {
+					setupData.put("Gunbot location", "The specified location does not exist");
+				}
+			}
+		} else {
+			setupData.put("Gunbot location", "You cannot use monitoring without this");
 		}
 
 		modelMap.put("setupData", setupData);
