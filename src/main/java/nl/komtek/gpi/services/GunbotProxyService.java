@@ -10,7 +10,6 @@ import net.jodah.failsafe.Failsafe;
 import net.jodah.failsafe.RetryPolicy;
 import nl.komtek.gpi.utils.ProxyHandledException;
 import nl.komtek.gpi.utils.Util;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -177,11 +176,8 @@ public class GunbotProxyService {
 				.onFailedAttempt(this::handleException)
 				.get(() -> analyzeResult(publicClient.returnTicker()));
 
-		if (logger.getLevel().isMoreSpecificThan(Level.INFO)) {
-			logger.info("ticker updated");
-		} else {
-			logger.info("ticker: " + result);
-		}
+		logger.debug("ticker: " + result);
+
 		return result;
 	}
 

@@ -93,7 +93,7 @@ public class CheckSetupController {
 			if (!gunbotLocation.startsWith("file://")) {
 				setupData.put("Gunbot location", "Your file location should start with 'file://'");
 			} else {
-				File file = new File(gunbotLocation);
+				File file = new File(gunbotLocation.replace("file://",""));
 				if (file.exists()) {
 					setupData.put("Gunbot location", "Looking good!");
 				} else {
