@@ -1,5 +1,6 @@
 package nl.komtek.gpi.application;
 
+import net.sf.ehcache.Cache;
 import org.apache.catalina.connector.Connector;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -13,7 +14,6 @@ import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -43,13 +43,27 @@ public class Application {
 
 	@Bean
 	public CacheManager cacheManager() {
-		return new EhCacheCacheManager(ehCacheCacheManager().getObject());
+		net.sf.ehcache.CacheManager cacheManager = ehCacheCacheManager().getObject();
+		Cache tickerCache = new Cache("ticker", 500, false, false, 0, 0);
+		Cache tradeHistoryCache = new Cache("tradeHistory", 500, false, false, 0, 0);
+		Cache openOrdersCache = new Cache("openOrders", 500, false, false, 0, 0);
+		Cache completeBalancesCache = new Cache("completeBalances", 5, false, false, 0, 0);
+		Cache chartDataCache = new Cache("chartData", 500, false, false, 30, 30);
+		Cache buyOrderProtectionCache = new Cache("buyOrderProtection", 100, false, false, 30, 30);
+		Cache balancesCache = new Cache("balances", 5, false, false, 0, 0);
+		cacheManager.addCache(tickerCache);
+		cacheManager.addCache(tradeHistoryCache);
+		cacheManager.addCache(openOrdersCache);
+		cacheManager.addCache(completeBalancesCache);
+		cacheManager.addCache(chartDataCache);
+		cacheManager.addCache(buyOrderProtectionCache);
+		cacheManager.addCache(balancesCache);
+		return new EhCacheCacheManager(cacheManager);
 	}
 
 	@Bean
 	public EhCacheManagerFactoryBean ehCacheCacheManager() {
 		EhCacheManagerFactoryBean factory = new EhCacheManagerFactoryBean();
-		factory.setConfigLocation(new ClassPathResource("ehcache.xml"));
 		factory.setShared(true);
 		return factory;
 	}

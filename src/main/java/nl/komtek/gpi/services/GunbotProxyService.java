@@ -24,6 +24,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -38,7 +39,7 @@ public class GunbotProxyService {
 	@Autowired
 	private ApplicationContext applicationContext;
 	@Autowired
-	Util util;
+	private Util util;
 	private Map<String, PoloniexTradingAPIClient> poloniexDefaultAPIClients = new HashMap<>();
 	private Map<String, PoloniexTradingAPIClient> poloniexTradingAPIClients = new HashMap<>();
 	private Map<String, String> marketMapping = new HashMap<>();
@@ -115,7 +116,7 @@ public class GunbotProxyService {
 		return marketMapping.size() > 0 && marketMapping.size() == poloniexMultiMarketTradingAPIClients.size();
 	}
 
-	private boolean createDefaultTradingClients() {
+	private void createDefaultTradingClients() {
 		for (int i = 1; i <= 10; i++) {
 			String apiKey = util.getEnvProperty(String.format("apiKey%d", i));
 			String apiSecret = util.getEnvProperty(String.format("apiSecret%d", i));
@@ -124,8 +125,6 @@ public class GunbotProxyService {
 			}
 			poloniexTradingAPIClients.put(apiKey, new PoloniexTradingAPIClient(apiKey, apiSecret));
 		}
-
-		return poloniexTradingAPIClients.size() > 0;
 	}
 
 	//@Cacheable(value = "BBChartData", key = "#currencyPair")
@@ -143,19 +142,16 @@ public class GunbotProxyService {
 		}
 	}
 
-	@Cacheable(value = "chartData", key = "#currencyPair+#start")
-	public String getChartData(String currencyPair, String start, long period) {
+	@Cacheable(value = "chartData", key = "#currencyPair+#period")
+	public String getChartData(String currencyPair, long period) {
 
-		long startLong = 0;
-		if (start.indexOf(".") > 0) {
-			startLong = Long.valueOf(start.substring(0, start.indexOf(".")));
-		} else {
-			startLong = Long.valueOf(start);
-		}
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, -2);
+		long start = cal.getTimeInMillis() / 1000;
 
 		while (true) {
 			try {
-				String result = publicClient.getChartData(currencyPair, period, startLong);
+				String result = publicClient.getChartData(currencyPair, period, start);
 				result = analyzeResult(result);
 				logger.debug("chartData: " + currencyPair + " -- start:" + start + " -- period:" + period + " -- " + result);
 				return result;
@@ -275,7 +271,7 @@ public class GunbotProxyService {
 		String result = Failsafe.with(retryPolicy)
 				.onFailedAttempt(this::handleException)
 				.get(() -> analyzeResult(tradingAPIClient.buy(currencyPair, buyPrice, amount, false, false, false)));
-		logger.debug("Buy order" + result);
+		logger.info("Buy order" + result);
 		return result;
 	}
 
@@ -293,7 +289,7 @@ public class GunbotProxyService {
 		String result = Failsafe.with(retryPolicy)
 				.onFailedAttempt(this::handleException)
 				.get(() -> analyzeResult(tradingAPIClient.buy(currencyPair, buyPrice, amount, false, false, false)));
-		logger.debug("Buy order" + result);
+		logger.info("Buy order" + result);
 		return result;
 	}
 

@@ -1,10 +1,15 @@
 package nl.komtek.gpi.controllers;
 
+import com.cf.data.map.poloniex.PoloniexDataMapper;
+import com.cf.data.model.poloniex.PoloniexChartData;
+import com.cf.data.model.poloniex.PoloniexTradeHistory;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import nl.komtek.gpi.services.GunbotProxyService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -14,6 +19,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.time.ZoneOffset;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Elroy on 17-6-2017.
@@ -25,11 +33,13 @@ public class GunbotProxyController {
 	private GunbotProxyService gunbotProxyService;
 	@Value("${doubleBuyProtection:false}")
 	private boolean doubleBuyProtection;
+	private Logger logger = LogManager.getLogger(GunbotProxyController.class);
+	private PoloniexDataMapper mapper = new PoloniexDataMapper();
 
 	@RequestMapping(value = "/public/**")
 	@ResponseBody
 	public String interceptAllCalls(HttpServletRequest request) {
-		System.out.println("intercepted -- " + request.getRequestURL() + "?" + request.getQueryString() + "?command=" + request.getParameter("command"));
+		logger.debug("intercepted -- " + request.getRequestURL() + "?" + request.getQueryString() + "?command=" + request.getParameter("command"));
 		return "intercepted";
 	}
 
@@ -40,7 +50,9 @@ public class GunbotProxyController {
 	                                     @RequestParam String start,
 	                                     @RequestParam long period) throws InterruptedException {
 
-		return gunbotProxyService.getChartData(currencyPair, start, period);
+		String result = gunbotProxyService.getChartData(currencyPair, period);
+
+		return filterChartDataByDate(start,result);
 	}
 
 	@RequestMapping(value = "/public/**", params = "command=returnTicker")
@@ -52,7 +64,7 @@ public class GunbotProxyController {
 	@RequestMapping(value = "/tradingApi/**")
 	@ResponseBody
 	public String tradingRequests(HttpServletRequest request) {
-		System.out.println(request.getRequestURL() + "??command=" + request.getParameter("command"));
+		logger.debug(request.getRequestURL() + "??command=" + request.getParameter("command"));
 		request.getParameterMap().keySet().stream().forEach((e) -> System.out.print(e + "-"));
 		return "trading api";
 	}
@@ -80,16 +92,17 @@ public class GunbotProxyController {
 		}
 		String result = gunbotProxyService.getOpenOrders(market);
 
-		JsonElement jelement = new JsonParser().parse(result);
-		JsonObject jobject = jelement.getAsJsonObject();
-		JsonArray jarray = jobject.getAsJsonArray(currencyPair);
-		return jarray != null ? jarray.toString() : "[]";
+		JsonElement jElement = new JsonParser().parse(result);
+		JsonObject jObject = jElement.getAsJsonObject();
+		JsonArray jArray = jObject.getAsJsonArray(currencyPair);
+		return jArray != null ? jArray.toString() : "[]";
 	}
 
 	@RequestMapping(value = "/tradingApi/**", params = "command=returnTradeHistory")
 	@ResponseBody
 	public String tradingRequestTradeHistory(HttpServletRequest request,
-	                                         @RequestParam String currencyPair) {
+	                                         @RequestParam String currencyPair,
+	                                         @RequestParam(required = false) String start) {
 
 		String market = "default";
 		if (gunbotProxyService.isUsingMultipleMarkets()) {
@@ -98,14 +111,7 @@ public class GunbotProxyController {
 		}
 		String result = gunbotProxyService.getTradeHistory(market);
 
-		if (result.equals("[]")){
-			return result;
-		}
-		JsonElement jelement = new JsonParser().parse(result);
-		JsonObject jobject = jelement.getAsJsonObject();
-		JsonArray jarray = jobject.getAsJsonArray(currencyPair);
-		return jarray != null ? jarray.toString() : "[]";
-
+		return filterTradeHistoryByDate(currencyPair, start, result);
 	}
 
 	@RequestMapping(value = "/tradingApi/**", params = "command=cancelOrder")
@@ -140,5 +146,67 @@ public class GunbotProxyController {
 		} else {
 			return gunbotProxyService.buyOrder(key, currencyPair, rate, amount);
 		}
+	}
+
+	private String filterTradeHistoryByDate(String currency, String start, String result) {
+		final long startLong;
+		if (start.indexOf(".") > 0) {
+			startLong = Long.valueOf(start.substring(0, start.indexOf(".")));
+		} else {
+			startLong = Long.valueOf(start);
+		}
+
+		if (result.equals("[]")) {
+			return result;
+		}
+
+		JsonParser jsonParser = new JsonParser();
+		JsonElement jElement = jsonParser.parse(result);
+		JsonObject jObject = jElement.getAsJsonObject();
+		JsonObject filteredjObject = new JsonObject();
+		JsonArray filteredjArray = new JsonArray();
+		for (Map.Entry entry : jObject.entrySet()) {
+			if (!currency.equalsIgnoreCase("all") && !currency.equalsIgnoreCase(entry.getKey().toString())) {
+				continue;
+			}
+			List<PoloniexTradeHistory> tradeHistory = mapper.mapTradeHistory(entry.getValue().toString());
+
+			tradeHistory.stream()
+					.filter(e -> e.date.toEpochSecond(ZoneOffset.UTC) >= startLong)
+					.map(e -> jsonParser.parse(e.toString()))
+					.forEach(filteredjArray::add);
+
+			filteredjObject.add(entry.getKey().toString(), filteredjArray);
+		}
+
+		if (currency.equals("all")) {
+			return (filteredjObject.entrySet().size() == 0) ? "[]" : filteredjObject.toString();
+		} else {
+			return (filteredjArray.size() == 0) ? "[]" : filteredjArray.toString();
+		}
+	}
+
+	private String filterChartDataByDate(String start, String result) {
+		final long startLong;
+		if (start.indexOf(".") > 0) {
+			startLong = Long.valueOf(start.substring(0, start.indexOf(".")));
+		} else {
+			startLong = Long.valueOf(start);
+		}
+
+		if (result.equals("[]")) {
+			return result;
+		}
+
+		List<PoloniexChartData> chartData = mapper.mapChartData(result);
+
+		JsonParser jsonParser = new JsonParser();
+		JsonArray filteredjArray = new JsonArray();
+		chartData.stream()
+				.filter(e -> e.date >= startLong)
+				.map(e -> jsonParser.parse(e.toString()))
+				.forEach(filteredjArray::add);
+
+		return filteredjArray.toString();
 	}
 }
