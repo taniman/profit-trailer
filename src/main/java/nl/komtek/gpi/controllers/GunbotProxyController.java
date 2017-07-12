@@ -52,7 +52,7 @@ public class GunbotProxyController {
 
 		String result = gunbotProxyService.getChartData(currencyPair, period);
 
-		return filterChartDataByDate(start,result);
+		return filterChartDataByDate(start, result);
 	}
 
 	@RequestMapping(value = "/public/**", params = "command=returnTicker")
@@ -164,13 +164,13 @@ public class GunbotProxyController {
 		JsonElement jElement = jsonParser.parse(result);
 		JsonObject jObject = jElement.getAsJsonObject();
 		JsonObject filteredjObject = new JsonObject();
-		JsonArray filteredjArray = new JsonArray();
 		for (Map.Entry entry : jObject.entrySet()) {
 			if (!currency.equalsIgnoreCase("all") && !currency.equalsIgnoreCase(entry.getKey().toString())) {
 				continue;
 			}
-			List<PoloniexTradeHistory> tradeHistory = mapper.mapTradeHistory(entry.getValue().toString());
 
+			List<PoloniexTradeHistory> tradeHistory = mapper.mapTradeHistory(entry.getValue().toString());
+			JsonArray filteredjArray = new JsonArray();
 			tradeHistory.stream()
 					.filter(e -> e.date.toEpochSecond(ZoneOffset.UTC) >= startLong)
 					.map(e -> jsonParser.parse(e.toString()))
@@ -182,7 +182,7 @@ public class GunbotProxyController {
 		if (currency.equals("all")) {
 			return (filteredjObject.entrySet().size() == 0) ? "[]" : filteredjObject.toString();
 		} else {
-			return (filteredjArray.size() == 0) ? "[]" : filteredjArray.toString();
+			return (filteredjObject.entrySet().size() == 0) ? "[]" : filteredjObject.getAsJsonArray(currency).toString();
 		}
 	}
 
