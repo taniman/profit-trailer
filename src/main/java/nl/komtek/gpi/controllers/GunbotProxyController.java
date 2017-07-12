@@ -33,6 +33,8 @@ public class GunbotProxyController {
 	private GunbotProxyService gunbotProxyService;
 	@Value("${doubleBuyProtection:false}")
 	private boolean doubleBuyProtection;
+	@Value("${doubleBuyProtectionSeconds:0}")
+	private int doubleBuyProtectionSeconds;
 	private Logger logger = LogManager.getLogger(GunbotProxyController.class);
 	private PoloniexDataMapper mapper = new PoloniexDataMapper();
 
@@ -141,7 +143,7 @@ public class GunbotProxyController {
 	                                @RequestParam BigDecimal amount) {
 
 		String key = request.getHeader("key");
-		if (doubleBuyProtection) {
+		if (doubleBuyProtection || doubleBuyProtectionSeconds > 0) {
 			return gunbotProxyService.buyOrderWithProtection(key, currencyPair, rate, amount);
 		} else {
 			return gunbotProxyService.buyOrder(key, currencyPair, rate, amount);
