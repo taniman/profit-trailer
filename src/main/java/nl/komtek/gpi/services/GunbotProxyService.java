@@ -13,6 +13,7 @@ import nl.komtek.gpi.utils.Util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -40,6 +41,8 @@ public class GunbotProxyService {
 	private ApplicationContext applicationContext;
 	@Autowired
 	private Util util;
+	@Value("${connection.maxRetries:6}")
+	private int maxRetries;
 	private Map<String, PoloniexTradingAPIClient> poloniexDefaultAPIClients = new HashMap<>();
 	private Map<String, PoloniexTradingAPIClient> poloniexTradingAPIClients = new HashMap<>();
 	private Map<String, String> marketMapping = new HashMap<>();
@@ -81,7 +84,7 @@ public class GunbotProxyService {
 		retryPolicy = new RetryPolicy()
 				.retryOn(failure -> failure instanceof Exception)
 				.withDelay(500, TimeUnit.MILLISECONDS)
-				.withMaxRetries(6);
+				.withMaxRetries(maxRetries);
 	}
 
 	private boolean createMarketDefaultApiClients(String market) {

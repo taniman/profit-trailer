@@ -8,6 +8,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import nl.komtek.gpi.services.GunbotProxyService;
+import nl.komtek.gpi.utils.Util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -35,6 +37,8 @@ public class GunbotProxyController {
 	private boolean doubleBuyProtection;
 	@Value("${doubleBuyProtectionSeconds:0}")
 	private int doubleBuyProtectionSeconds;
+	@Autowired
+	private Util util;
 	private Logger logger = LogManager.getLogger(GunbotProxyController.class);
 	private PoloniexDataMapper mapper = new PoloniexDataMapper();
 
@@ -138,9 +142,19 @@ public class GunbotProxyController {
 	@RequestMapping(value = "/tradingApi/**", params = "command=buy")
 	@ResponseBody
 	public String tradingRequestBuy(HttpServletRequest request,
+	                                HttpServletResponse response,
 	                                @RequestParam String currencyPair,
 	                                @RequestParam BigDecimal rate,
 	                                @RequestParam BigDecimal amount) {
+
+		boolean globalSellOnlyMode = Boolean.parseBoolean(util.getConfigurationProperty("sellOnlyMode"));
+		boolean pairSellOnlyMode = Boolean.parseBoolean(util.getConfigurationProperty(String.format("%s_sellOnlyMode", currencyPair)));
+		if (globalSellOnlyMode || pairSellOnlyMode) {
+			String message = String.format("You are not allowed to buy. Sell Only mode is active for %s", currencyPair);
+			logger.info(message);
+			response.setStatus(403);
+			return message;
+		}
 
 		String key = request.getHeader("key");
 		if (doubleBuyProtection || doubleBuyProtectionSeconds > 0) {
