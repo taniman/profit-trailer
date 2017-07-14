@@ -18,13 +18,6 @@ public class AllScheduledTasks {
 	@Autowired
 	private GunbotProxyService gunbotProxyService;
 
-	@Scheduled(fixedRate = Long.MAX_VALUE)
-	public void itWorks() {
-		if (gunbotProxyService.isUsingMultipleMarkets()) {
-			logger.info("Running in multimarket MODE!");
-		}
-		logger.info("Good job, It works!");
-	}
 
 	@Scheduled(fixedDelay = 2000)
 	public void updateTicker() {

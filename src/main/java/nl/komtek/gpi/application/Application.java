@@ -7,7 +7,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -44,14 +46,14 @@ public class Application {
 	}
 
 	@Bean
-	public net.sf.ehcache.management.CacheManager cacheManager() {
+	public CacheManager cacheManager() {
 		net.sf.ehcache.CacheManager cacheManager = ehCacheCacheManager().getObject();
-		Cache tickerCache = new Cache("ticker", 500, false, false, 0, 0);
-		Cache tradeHistoryCache = new Cache("tradeHistory", 500, false, false, 0, 0);
-		Cache openOrdersCache = new Cache("openOrders", 500, false, false, 0, 0);
-		Cache completeBalancesCache = new Cache("completeBalances", 5, false, false, 0, 0);
+		Cache tickerCache = new Cache("ticker", 500, false, true, 0, 0);
+		Cache tradeHistoryCache = new Cache("tradeHistory", 500, false, true, 0, 0);
+		Cache openOrdersCache = new Cache("openOrders", 500, false, true, 0, 0);
+		Cache completeBalancesCache = new Cache("completeBalances", 5, false, true, 0, 0);
 		Cache chartDataCache = new Cache("chartData", 500, false, false, 30, 30);
-		Cache balancesCache = new Cache("balances", 5, false, false, 0, 0);
+		Cache balancesCache = new Cache("balances", 5, false, true, 0, 0);
 
 
 		cacheManager.addCache(tickerCache);
@@ -69,7 +71,7 @@ public class Application {
 			cacheManager.addCache(buyOrderProtectionCache);
 		}
 
-		return new net.sf.ehcache.management.CacheManager(cacheManager);
+		return new EhCacheCacheManager(cacheManager);
 
 	}
 
@@ -82,7 +84,7 @@ public class Application {
 
 	@Bean
 	public TaskScheduler taskScheduler() {
-		return new ConcurrentTaskScheduler(Executors.newScheduledThreadPool(5));
+		return new ConcurrentTaskScheduler(Executors.newScheduledThreadPool(2));
 	}
 
 	@Bean

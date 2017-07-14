@@ -354,7 +354,7 @@ public class GunbotProxyService {
 		} else if (e instanceof NullPointerException) {
 			logger.error("Something is really wrong", e);
 		} else {
-			logger.error(e.toString());
+			logger.error(e);
 		}
 	}
 
