@@ -25,6 +25,16 @@ public class Util {
 		return StringUtils.replace(value, "\"", "");
 	}
 
+	public String getEnvProperty(String key, String defaultValue) {
+		String value = getEnvProperty(key);
+		return (value == null) ? defaultValue : value;
+	}
+
+	public String getConfigurationProperty(String key, String defaultValue) {
+		String value = getConfigurationProperty(key);
+		return (value == null) ? defaultValue : value;
+	}
+
 	public String getConfigurationProperty(String key) {
 		CaseLessProperties prop = new CaseLessProperties();
 		String value = null;
