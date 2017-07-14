@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -145,15 +146,16 @@ public class GunbotProxyController {
 	                                HttpServletResponse response,
 	                                @RequestParam String currencyPair,
 	                                @RequestParam BigDecimal rate,
-	                                @RequestParam BigDecimal amount) {
+	                                @RequestParam BigDecimal amount) throws IOException {
 
 		boolean globalSellOnlyMode = Boolean.parseBoolean(util.getConfigurationProperty("sellOnlyMode"));
 		boolean pairSellOnlyMode = Boolean.parseBoolean(util.getConfigurationProperty(String.format("%s_sellOnlyMode", currencyPair)));
 		if (globalSellOnlyMode || pairSellOnlyMode) {
+			JsonObject jsonObject = new JsonObject();
 			String message = String.format("You are not allowed to buy. Sell Only mode is active for %s", currencyPair);
-			logger.info(message);
-			response.setStatus(403);
-			return message;
+			jsonObject.addProperty("error", message);
+			logger.info(jsonObject.toString());
+			return jsonObject.toString();
 		}
 
 		String key = request.getHeader("key");

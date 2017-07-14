@@ -9,7 +9,6 @@ import org.springframework.util.StringUtils;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.Properties;
 
 /**
  * Created by Elroy on 10-7-2017.
@@ -32,9 +31,9 @@ public class Util {
 		try (InputStream input = new FileInputStream("configuration.properties")) {
 			prop.load(input);
 			value = prop.getProperty(key);
-			logger.debug(String.format("reading property key %s -- value %s"), key, value);
+			logger.debug(String.format("reading property key %s -- value %s", key, value));
 		} catch (Exception e) {
-			logger.error("Error reading configuration file", e.getMessage());
+			logger.error("Error reading configuration file", e);
 		}
 		return value;
 	}

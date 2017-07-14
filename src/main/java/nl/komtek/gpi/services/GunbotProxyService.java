@@ -83,7 +83,6 @@ public class GunbotProxyService {
 
 		retryPolicy = new RetryPolicy()
 				.retryOn(failure -> failure instanceof Exception)
-				.abortOn(failure -> failure.getMessage().startsWith("error:"))
 				.withDelay(500, TimeUnit.MILLISECONDS)
 				.withMaxRetries(maxRetries);
 	}
@@ -343,7 +342,7 @@ public class GunbotProxyService {
 			throw new ProxyHandledException("No value was returned");
 		} else if (result.contains("Nonce")) {
 			throw new ProxyHandledException("nonce error: " + result);
-		} else if (result.contains("error:")) {
+		} else if (result.contains("Connection timed out")) {
 			throw new RuntimeException(result);
 		}
 		return result;
