@@ -83,6 +83,7 @@ public class GunbotProxyService {
 
 		retryPolicy = new RetryPolicy()
 				.retryOn(failure -> failure instanceof Exception)
+				.abortOn(failure -> failure.getMessage().startsWith("error:"))
 				.withDelay(500, TimeUnit.MILLISECONDS)
 				.withMaxRetries(maxRetries);
 	}
@@ -274,7 +275,7 @@ public class GunbotProxyService {
 		String result = Failsafe.with(retryPolicy)
 				.onFailedAttempt(this::handleException)
 				.get(() -> analyzeResult(tradingAPIClient.buy(currencyPair, buyPrice, amount, false, false, false)));
-		logger.info("Buy order" + result);
+		logger.info(String.format("Buy order for %s -- %s", currencyPair, result));
 		return result;
 	}
 
@@ -292,7 +293,7 @@ public class GunbotProxyService {
 		String result = Failsafe.with(retryPolicy)
 				.onFailedAttempt(this::handleException)
 				.get(() -> analyzeResult(tradingAPIClient.buy(currencyPair, buyPrice, amount, false, false, false)));
-		logger.info("Buy order" + result);
+		logger.info(String.format("Buy order for %s -- %s", currencyPair, result));
 		return result;
 	}
 
@@ -309,7 +310,7 @@ public class GunbotProxyService {
 		String result = Failsafe.with(retryPolicy)
 				.onFailedAttempt(this::handleException)
 				.get(() -> analyzeResult(tradingAPIClient.sell(currencyPair, buyPrice, amount, false, true, false)));
-		logger.info("Sell order" + result);
+		logger.info(String.format("Sell order for %s -- %s", currencyPair, result));
 		return result;
 	}
 
@@ -342,7 +343,7 @@ public class GunbotProxyService {
 			throw new ProxyHandledException("No value was returned");
 		} else if (result.contains("Nonce")) {
 			throw new ProxyHandledException("nonce error: " + result);
-		} else if (result.contains("error")) {
+		} else if (result.contains("error:")) {
 			throw new RuntimeException(result);
 		}
 		return result;
@@ -393,9 +394,8 @@ public class GunbotProxyService {
 
 	public String checkTradingKey(String apiKey) {
 		PoloniexTradingAPIClient tradingAPIClient = poloniexTradingAPIClients.get(apiKey);
-		String result = Failsafe.with(retryPolicy)
+		return Failsafe.with(retryPolicy)
 				.onFailedAttempt(this::handleException)
 				.get(() -> analyzeResult(tradingAPIClient.returnOpenOrders("ALL")));
-		return result;
 	}
 }

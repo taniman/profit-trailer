@@ -15,5 +15,7 @@ REM This apiKey will do the buying and selling and orders canceling stuff. You c
 set a=--apiKey1=another apiKey
 set as=--apiSecret1=your secret
 
-java -jar GunbotProxyCommunity-0.9.7.jar %sp% %sks% %sksp% %skp% %da% %ds% %a% %as% %lnl%
+set dbp=--doubleBuyProtectionSeconds=60
+
+java -jar GunbotProxyCommunity-0.9.7.jar %sp% %sks% %sksp% %skp% %da% %ds% %a% %as% %lnl% %dbp%
 pause
