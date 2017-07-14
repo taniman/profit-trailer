@@ -84,7 +84,7 @@ public class Application {
 
 	@Bean
 	public TaskScheduler taskScheduler() {
-		return new ConcurrentTaskScheduler(Executors.newScheduledThreadPool(2));
+		return new ConcurrentTaskScheduler(Executors.newScheduledThreadPool(4));
 	}
 
 	@Bean

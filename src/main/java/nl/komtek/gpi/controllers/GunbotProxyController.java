@@ -23,6 +23,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.ZoneOffset;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -101,7 +103,7 @@ public class GunbotProxyController {
 
 		JsonElement jElement = new JsonParser().parse(result);
 		JsonObject jObject = jElement.getAsJsonObject();
-		JsonArray jArray = jObject.getAsJsonArray(currencyPair);
+		JsonArray jArray = hideOpenOrders(jObject.getAsJsonArray(currencyPair));
 		return jArray != null ? jArray.toString() : "[]";
 	}
 
@@ -216,6 +218,10 @@ public class GunbotProxyController {
 			return result;
 		}
 
+		if (result.contains("error")) {
+			return result;
+		}
+
 		List<PoloniexChartData> chartData = mapper.mapChartData(result);
 
 		JsonParser jsonParser = new JsonParser();
@@ -226,5 +232,19 @@ public class GunbotProxyController {
 				.forEach(filteredjArray::add);
 
 		return filteredjArray.toString();
+	}
+
+	private JsonArray hideOpenOrders(JsonArray jsonArray){
+
+		for (Iterator<JsonElement> it = jsonArray.iterator(); it.hasNext(); ) {
+			JsonElement element = it.next();
+			JsonObject jsonObject = element.getAsJsonObject();
+			String orderNumber = jsonObject.get("orderNumber").getAsString();
+			String[] orderNumbersToHide = util.getConfigurationProperty("hideOrders","").split(",");
+			if (Arrays.asList(orderNumbersToHide).contains(orderNumber)){
+				it.remove();
+			}
+		}
+		return jsonArray;
 	}
 }

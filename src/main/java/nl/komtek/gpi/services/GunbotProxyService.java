@@ -343,7 +343,7 @@ public class GunbotProxyService {
 		} else if (result.contains("Nonce")) {
 			throw new ProxyHandledException("nonce error: " + result);
 		} else if (result.contains("Connection timed out")) {
-			throw new RuntimeException(result);
+			throw new ProxyHandledException(result);
 		}
 		return result;
 	}
