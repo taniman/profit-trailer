@@ -1,0 +1,76 @@
+#!/bin/sh
+# /etc/init.d/gproxy
+### BEGIN INIT INFO
+# Provides:          gproxy
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start gproxy at boot time
+# Description:       Gunbot Community Proxy {start|stop|status|restart} init.d script.
+### END INIT INFO
+
+SERVICE_NAME=GunbotProxy
+GUNBOT_PATH=/opt/gunbot
+GUNBOT_JAR=GunbotProxy.jar
+PID_PATH_NAME=/tmp/GunbotProxy-pid
+
+
+proxy_status() {
+        if [ ! -f $PID_PATH_NAME ]; then
+            printf "$SERVICE_NAME reports it stopped "
+        else
+            printf "$SERVICE_NAME seems to be started "
+        fi
+        if ps ax | grep -v grep | grep $GUNBOT_JAR > /dev/null; then
+            echo "and we see it in the process list."
+        else
+            echo "and it's no longer in the process list."
+        fi
+}
+
+
+case $1 in
+    start)
+        echo "Starting $SERVICE_NAME ..."
+        if [ ! -f $PID_PATH_NAME ]; then
+            cd $GUNBOT_PATH
+            nohup java -Xmx256m -jar $GUNBOT_JAR /tmp 2>> /dev/null >> /dev/null &
+            echo $! > $PID_PATH_NAME
+            proxy_status
+        else
+            echo "$SERVICE_NAME is already running ..."
+        fi
+    ;;
+    stop)
+        if [ -f $PID_PATH_NAME ]; then
+            PID=$(cat $PID_PATH_NAME);
+            echo "$SERVICE_NAME stoping ..."
+            kill $PID;
+            rm $PID_PATH_NAME
+            proxy_status
+        else
+            echo "$SERVICE_NAME is not running ..."
+        fi
+    ;;
+    status)
+        proxy_status
+    ;;
+    restart)
+        if [ -f $PID_PATH_NAME ]; then
+            PID=$(cat $PID_PATH_NAME);
+            echo "$SERVICE_NAME stopping ...";
+            kill $PID;
+            rm $PID_PATH_NAME
+            sleep 4
+            proxy_status
+            sleep 1
+            echo "$SERVICE_NAME starting ..."
+            nohup java -Xmx256m -jar $GUNBOT_JAR /tmp 2>> /dev/null >> /dev/null &
+            echo $! > $PID_PATH_NAME
+            proxy_status
+        else
+            echo "$SERVICE_NAME is not running ..."
+        fi
+    ;;
+esac
