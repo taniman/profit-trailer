@@ -27,7 +27,7 @@ status() {
             PID=$(cat $PID_PATH_NAME);
             printf "$SERVICE_NAME PID:$PID "
         else
-            printf "$SERVICE_NAME looks like it's not running "
+            printf "$SERVICE_NAME "
         fi
         if ps ax | grep -v grep | grep $GPROXY_JAR > /dev/null; then
             echo " (Active)"
@@ -64,7 +64,7 @@ stop() {
             PID=$(cat $PID_PATH_NAME);
             echo "$SERVICE_NAME stopping ..."
             kill $PID;
-            wait
+            sleep 10
             rm $PID_PATH_NAME
             status
         else
