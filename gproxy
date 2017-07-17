@@ -19,65 +19,73 @@ GPROXY_JAR=GunbotProxy.jar
 # place this file in the /etc/init.d folder and execute the command update-rc.d 
 
 SERVICE_NAME=GunbotProxy
-PID_PATH_NAME=/tmp/GunbotProxy-pid
+PID_PATH_NAME="/tmp/GunbotProxy-pid"
+
 
 status() {
         if [ -f $PID_PATH_NAME ]; then
-            printf "$SERVICE_NAME looks like it's running "
+            PID=$(cat $PID_PATH_NAME);
+            printf "$SERVICE_NAME PID:$PID "
         else
             printf "$SERVICE_NAME looks like it's not running "
         fi
         if ps ax | grep -v grep | grep $GPROXY_JAR > /dev/null; then
-            [ -f $PID_PATH_NAME ] && printf "and" || printf "but"
-            echo " it is in the list of processes."
+            echo " (Active)"
+            tail /var/log/gproxy.log | grep INFO:
         else
-            [ -f $PID_PATH_NAME ] && printf "but" || printf "and"
-            echo " its not in the list of processes."
-            [ -f $PID_PATH_NAME ] || {echo "Steps to resolve:"; echo "#1 Make sure the proxy works when manually started."; echo "#2 Check that the Path and Jar variables in this script match your configuration."; rm $PID_PATH_NAME}
+            echo " (Inactive)"
+            [ -f $PID_PATH_NAME ] && {
+                printf "/n"
+                tail /var/log/gproxy.log | grep INFO:
+                printf "/n"
+                echo "Steps to resolve:"
+                echo "#1 Make sure the proxy works when manually started."
+                echo "#2 Check that the Path and Jar variables in this script match your configuration."
+                rm $PID_PATH_NAME
+            }
         fi
 }
 
-case $1 in
-    start)
-        echo "Starting $SERVICE_NAME ..."
+start() {
         if [ ! -f $PID_PATH_NAME ]; then
+            echo "Starting $SERVICE_NAME ..."
             cd $GPROXY_PATH
-            nohup java -Xmx256m -jar $GPROXY_JAR /tmp 2>> /dev/null >> /dev/null &
+            [ -f /var/log/gproxy.log ] && rm /var/log/gproxy.log
+            nohup java -Xmx256m -jar $GPROXY_JAR /tmp 2>> /var/log/gproxy.log >> /dev/null  &
             echo $! > $PID_PATH_NAME
-            status
+            (tail -f /var/log/gproxy.log & P=$! ; sleep 10; kill -9 $P) | grep INFO:
         else
             status
         fi
-    ;;
-    stop)
-        if [ -f $PID_PATH_NAME ]; then
+}
+
+stop() {
+  if [ -f $PID_PATH_NAME ]; then
             PID=$(cat $PID_PATH_NAME);
             echo "$SERVICE_NAME stopping ..."
             kill $PID;
+            wait
             rm $PID_PATH_NAME
-            sleep 3
-            proxy_status
+            status
         else
             echo "$SERVICE_NAME is not running ..."
         fi
+}
+
+
+case $1 in
+    start)
+        start
+    ;;
+    stop)
+        stop
     ;;
     status)
         status
     ;;
     restart)
-        if [ -f $PID_PATH_NAME ]; then
-            PID=$(cat $PID_PATH_NAME);
-            echo "$SERVICE_NAME stopping ...";
-            kill $PID;
-            rm $PID_PATH_NAME
-            sleep 3
-            echo "$SERVICE_NAME starting ..."
-            nohup java -Xmx256m -jar $GPROXY_JAR /tmp 2>> /dev/null >> /dev/null &
-            echo $! > $PID_PATH_NAME
-            status
-        else
-            echo "$SERVICE_NAME is not running ..."
-        fi
+        stop
+        start
     ;;
     *)
         echo "Usage: gproxy {start|stop|status|restart}"
