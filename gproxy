@@ -17,15 +17,17 @@ PID_PATH_NAME=/tmp/GunbotProxy-pid
 
 
 proxy_status() {
-        if [ ! -f $PID_PATH_NAME ]; then
-            printf "$SERVICE_NAME reports it stopped "
+        if [ -f $PID_PATH_NAME ]; then
+            printf "$SERVICE_NAME looks like it's running "
         else
-            printf "$SERVICE_NAME seems to be started "
+            printf "$SERVICE_NAME looks like it's not running "
         fi
         if ps ax | grep -v grep | grep $GUNBOT_JAR > /dev/null; then
-            echo "and we see it in the process list."
+            [ -f $PID_PATH_NAME ] && printf "and" || printf "but"
+            echo " it is in the list of processes."
         else
-            echo "and it's no longer in the process list."
+            [ -f $PID_PATH_NAME ] && printf "but" || printf "and"
+            echo " its not in the list of processes."
         fi
 }
 
@@ -39,15 +41,16 @@ case $1 in
             echo $! > $PID_PATH_NAME
             proxy_status
         else
-            echo "$SERVICE_NAME is already running ..."
+            proxy_status
         fi
     ;;
     stop)
         if [ -f $PID_PATH_NAME ]; then
             PID=$(cat $PID_PATH_NAME);
-            echo "$SERVICE_NAME stoping ..."
+            echo "$SERVICE_NAME stopping ..."
             kill $PID;
             rm $PID_PATH_NAME
+            sleep 3
             proxy_status
         else
             echo "$SERVICE_NAME is not running ..."
@@ -72,5 +75,9 @@ case $1 in
         else
             echo "$SERVICE_NAME is not running ..."
         fi
+    ;;
+    *)
+        echo "Usage: gproxy {start|stop|status|restart}"
+        exit 1
     ;;
 esac
