@@ -37,7 +37,6 @@ status() {
         fi
 }
 
-
 case $1 in
     start)
         echo "Starting $SERVICE_NAME ..."
