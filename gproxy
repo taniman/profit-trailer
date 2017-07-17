@@ -32,7 +32,7 @@ status() {
             echo " it is in the list of processes."
         else
             [ -f $PID_PATH_NAME ] && printf "but" || printf "and"
-            echo " its not in the list of processes.
+            echo " its not in the list of processes."
             [ -f $PID_PATH_NAME ] || {echo "Steps to resolve:"; echo "#1 Make sure the proxy works when manually started."; echo "#2 Check that the Path and Jar variables in this script match your configuration."; rm $PID_PATH_NAME}
         fi
 }
