@@ -31,16 +31,14 @@ status() {
         fi
         if ps ax | grep -v grep | grep $GPROXY_JAR > /dev/null; then
             echo " (Active)"
-            tail /var/log/gproxy.log | grep INFO:
         else
             echo " (Inactive)"
             [ -f $PID_PATH_NAME ] && {
                 printf "/n"
                 tail /var/log/gproxy.log | grep INFO:
                 printf "/n"
-                echo "Steps to resolve:"
-                echo "#1 Make sure the proxy works when manually started."
-                echo "#2 Check that the Path and Jar variables in this script match your configuration."
+                echo "Problem Detected:"
+                echo "It appears as though the proxy started but did not remain active."
                 rm $PID_PATH_NAME
             }
         fi
