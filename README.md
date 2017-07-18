@@ -4,7 +4,10 @@ Free Proxy for Gunbot on Poloniex
 # Join the telegram group
 If you have questions after reading the readme
 https://t.me/joinchat/FWYlMkKK-mkrSuj836ehug
-<br />
+
+# Another guide
+<a href="https://gunthy.org/index.php?topic=570.msg3080#msg3080">Diesel's Guide</a>
+
 # How to run
 Download the latest released jar file or compile your own using the source code 
 https://github.com/taniman/gunbotproxycommunity/releases
@@ -20,8 +23,14 @@ java -jar GunbotProxyCommunity-x.x.x.jar  (replace x.x.x with your actual versio
 On OSX or some linux versions you might need to sudo su and then run the java -jar command.<br />
 <br />
 If you did everything correctly the application will start without giving you any error messages.<br />
+
+### On windows
 Open a web browser and go to <br />
 http://localhost:8081/checkSetup/ <br />
+<br />
+### On a Linux VPS
+curl http://localhost:8081/checkSetupLinux/ <br />
+<br />
 All rows except hostfile should say 'Looking good!'<br />
 If this is not the case, than you have an error in your application.properties <br />
 So everything is up and running. <br />
@@ -39,8 +48,16 @@ Open a web browser again and again go to : <br />
 http://localhost:8081/checkSetup/ <br />
 All rows should say 'Looking good!' <br />
 If this is not the case, than you have an error in your application.properties <br />
+
+# Running in the background
+Use the provided pm2 json file.<br />
+If you have pm2 installed just use this command.<br />
+pm2 start pm2-GunbotProxyCommunity.json <br />
+pm2 save <br />
+This will make sure that pm2 will automatically starts the proxy when pm2 reloads. <br />
 <br />
-<br />
+To see the proxy log you could do. <br />
+pm2 log 'id' <-- this is the id pm2 gave your proxy
 
 # Warning
 Please use the proxy on a VPS or machine that you do not use normally. <br />
