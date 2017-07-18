@@ -9,8 +9,8 @@ https://t.me/joinchat/FWYlMkKK-mkrSuj836ehug
 <a href="https://gunthy.org/index.php?topic=570.msg3080#msg3080">Diesel's Guide</a>
 
 # How to run
-Download the latest released jar file or compile your own using the source code 
-https://github.com/taniman/gunbotproxycommunity/releases
+Download the latest released jar file or compile your own using the source code <br />
+https://github.com/taniman/gunbotproxycommunity/releases <br />
 <br />
 Put the jar file in a directory <br />
 Put application.properties in the same directory and fill in your apiKeys and secrets <br />
@@ -22,12 +22,12 @@ Open a terminal or command prompt and type <br />
 java -jar GunbotProxyCommunity-x.x.x.jar  (replace x.x.x with your actual version number)<br />
 On OSX or some linux versions you might need to sudo su and then run the java -jar command.<br />
 <br />
-If you did everything correctly the application will start without giving you any error messages.<br />
+If you did everything correctly the application will start without giving you any error messages.
 
 ### On windows
 Open a web browser and go to <br />
-http://localhost:8081/checkSetup/ <br />
-<br />
+http://localhost:8081/checkSetup/
+
 ### On a Linux VPS
 curl http://localhost:8081/checkSetupLinux/ <br />
 <br />
@@ -54,7 +54,7 @@ Use the provided pm2 json file.<br />
 If you have pm2 installed just use this command.<br />
 pm2 start pm2-GunbotProxyCommunity.json <br />
 pm2 save <br />
-This will make sure that pm2 will automatically starts the proxy when pm2 reloads. <br />
+This will make sure that pm2 will automatically start the proxy when pm2 reloads. <br />
 <br />
 To see the proxy log you could do. <br />
 pm2 log 'id' <-- this is the id pm2 gave your proxy
