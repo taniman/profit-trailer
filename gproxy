@@ -35,11 +35,11 @@ status() {
         else
             echo " (Inactive)"
             [ -f $PID_PATH_NAME ] && {
-                printf "/n"
+                printf "\n"
                 tail /var/log/gproxy.log | grep INFO:
-                printf "/n"
                 echo "Problem Detected:"
                 echo "It appears as though the proxy started but did not remain active."
+                printf "\n"
             }
         fi
 }
