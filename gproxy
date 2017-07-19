@@ -16,7 +16,8 @@ GPROXY_JAR=GunbotProxy.jar
 
 # You can use this script to start and stop the Gunbot Community Proxy
 # If you would like the proxy to start and stop automatically when rebooting
-# place this file in the /etc/init.d folder and execute the command update-rc.d 
+# place this file in the '/etc/init.d' folder and execute the command 
+# update-rc.d gproxy defaults
 
 SERVICE_NAME=GunbotProxy
 PID_PATH_NAME="/tmp/GunbotProxy-pid"
@@ -39,13 +40,13 @@ status() {
                 printf "/n"
                 echo "Problem Detected:"
                 echo "It appears as though the proxy started but did not remain active."
-                rm $PID_PATH_NAME
             }
         fi
 }
 
 start() {
-        if [ ! -f $PID_PATH_NAME ]; then
+        if [ ! ps ax | grep -v grep | grep $GPROXY_JAR > /dev/null ]; then
+            rm $PID_PATH_NAME
             echo "Starting $SERVICE_NAME ..."
             cd $GPROXY_PATH
             [ -f /var/log/gproxy.log ] && rm /var/log/gproxy.log
