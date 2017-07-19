@@ -46,7 +46,7 @@ status() {
 
 start() {
         if  ! ps ax | grep -v grep | grep $GPROXY_JAR > /dev/null ; then
-            rm $PID_PATH_NAME
+            rm -f $PID_PATH_NAME
             echo "Starting $SERVICE_NAME ..."
             cd $GPROXY_PATH
             [ -f /var/log/gproxy.log ] && rm /var/log/gproxy.log
@@ -63,8 +63,8 @@ stop() {
             PID=$(cat $PID_PATH_NAME);
             echo "$SERVICE_NAME stopping ..."
             kill $PID;
+            rm -f $PID_PATH_NAME
             sleep 10
-            rm $PID_PATH_NAME
             status
         else
             echo "$SERVICE_NAME is not running ..."
