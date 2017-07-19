@@ -45,7 +45,7 @@ status() {
 }
 
 start() {
-        if [ ! ps ax | grep -v grep | grep $GPROXY_JAR > /dev/null ]; then
+        if  ! ps ax | grep -v grep | grep $GPROXY_JAR > /dev/null ; then
             rm $PID_PATH_NAME
             echo "Starting $SERVICE_NAME ..."
             cd $GPROXY_PATH
