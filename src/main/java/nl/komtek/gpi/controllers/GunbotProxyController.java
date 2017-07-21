@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -240,7 +241,7 @@ public class GunbotProxyController {
 			JsonElement element = it.next();
 			JsonObject jsonObject = element.getAsJsonObject();
 			String orderNumber = jsonObject.get("orderNumber").getAsString();
-			String[] orderNumbersToHide = util.getConfigurationProperty("hideOrders","").split(",");
+			String[] orderNumbersToHide = StringUtils.trimAllWhitespace(util.getConfigurationProperty("hideOrders","")).split(",");
 			if (Arrays.asList(orderNumbersToHide).contains(orderNumber)){
 				it.remove();
 			}
