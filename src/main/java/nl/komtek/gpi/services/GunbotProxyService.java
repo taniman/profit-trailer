@@ -264,18 +264,7 @@ public class GunbotProxyService {
 	@Caching(evict = {@CacheEvict(value = "openOrders", allEntries = true),
 			@CacheEvict(value = "completeBalances", allEntries = true)})
 	public synchronized String buyOrder(String key, String currencyPair, BigDecimal buyPrice, BigDecimal amount) {
-		PoloniexTradingAPIClient tmpTradingAPIClient;
-		if (isUsingMultipleMarkets()) {
-			tmpTradingAPIClient = getMultiMarketTradingClient(key);
-		} else {
-			tmpTradingAPIClient = getTradingClient("random");
-		}
-		final PoloniexTradingAPIClient tradingAPIClient = tmpTradingAPIClient;
-		String result = Failsafe.with(retryPolicy)
-				.onFailedAttempt(this::handleException)
-				.get(() -> analyzeResult(tradingAPIClient.buy(currencyPair, buyPrice, amount, false, false, false)));
-		logger.info(String.format("Buy order for %s -- %s", currencyPair, result));
-		return result;
+		return buyOrderWithProtection(key, currencyPair, buyPrice, amount);
 	}
 
 	@Cacheable(value = "buyOrderProtection", key = "#currencyPair")
@@ -289,16 +278,18 @@ public class GunbotProxyService {
 			tmpTradingAPIClient = getTradingClient("random");
 		}
 		final PoloniexTradingAPIClient tradingAPIClient = tmpTradingAPIClient;
+		final Boolean fillOrKill = Boolean.valueOf(util.getConfigurationProperty("buy_fillOrKill", "false"));
+		final Boolean immediateOrCancel = Boolean.valueOf(util.getConfigurationProperty("buy_immediateOrCancel", "false"));
 		String result = Failsafe.with(retryPolicy)
 				.onFailedAttempt(this::handleException)
-				.get(() -> analyzeResult(tradingAPIClient.buy(currencyPair, buyPrice, amount, false, false, false)));
+				.get(() -> analyzeResult(tradingAPIClient.buy(currencyPair, buyPrice, amount, fillOrKill, immediateOrCancel, false)));
 		logger.info(String.format("Buy order for %s -- %s", currencyPair, result));
 		return result;
 	}
 
 	@Caching(evict = {@CacheEvict(value = "openOrders", allEntries = true),
 			@CacheEvict(value = "completeBalances", allEntries = true)})
-	public synchronized String sellOrder(String key, String currencyPair, BigDecimal buyPrice, BigDecimal amount) {
+	public synchronized String sellOrder(String key, String currencyPair, BigDecimal sellPrice, BigDecimal amount) {
 		PoloniexTradingAPIClient tmpTradingAPIClient;
 		if (isUsingMultipleMarkets()) {
 			tmpTradingAPIClient = getMultiMarketTradingClient(key);
@@ -306,9 +297,12 @@ public class GunbotProxyService {
 			tmpTradingAPIClient = getTradingClient("random");
 		}
 		final PoloniexTradingAPIClient tradingAPIClient = tmpTradingAPIClient;
+		final Boolean fillOrKill = Boolean.valueOf(util.getConfigurationProperty("sell_fillOrKill", "false"));
+		final Boolean immediateOrCancel = Boolean.valueOf(util.getConfigurationProperty("sell_immediateOrCancel", "false"));
+
 		String result = Failsafe.with(retryPolicy)
 				.onFailedAttempt(this::handleException)
-				.get(() -> analyzeResult(tradingAPIClient.sell(currencyPair, buyPrice, amount, false, true, false)));
+				.get(() -> analyzeResult(tradingAPIClient.sell(currencyPair, sellPrice, amount, fillOrKill, immediateOrCancel, false)));
 		logger.info(String.format("Sell order for %s -- %s", currencyPair, result));
 		return result;
 	}
