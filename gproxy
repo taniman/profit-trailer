@@ -1,0 +1,93 @@
+#!/bin/sh
+# /etc/init.d/gproxy
+### BEGIN INIT INFO
+# Provides:          gproxy
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start gproxy at boot time
+# Description:       Gunbot Community Proxy {start|stop|status|restart} init.d script.
+### END INIT INFO
+
+# EDIT THESE VARIABLES IF NEEDED
+GPROXY_PATH=/opt/gunbot
+GPROXY_JAR=GunbotProxy.jar
+
+# You can use this script to start and stop the Gunbot Community Proxy
+# If you would like the proxy to start and stop automatically when rebooting
+# place this file in the '/etc/init.d' folder and execute the command 
+# update-rc.d gproxy defaults
+
+SERVICE_NAME=GunbotProxy
+PID_PATH_NAME="/tmp/GunbotProxy-pid"
+
+
+status() {
+        if [ -f $PID_PATH_NAME ]; then
+            PID=$(cat $PID_PATH_NAME);
+            printf "$SERVICE_NAME PID:$PID "
+        else
+            printf "$SERVICE_NAME "
+        fi
+        if ps ax | grep -v grep | grep $GPROXY_JAR > /dev/null; then
+            echo " (Active)"
+        else
+            echo " (Inactive)"
+            [ -f $PID_PATH_NAME ] && {
+                printf "\n"
+                tail /var/log/gproxy.log | grep INFO:
+                echo "Problem Detected:"
+                echo "It appears as though the proxy started but did not remain active."
+                printf "\n"
+            }
+        fi
+}
+
+start() {
+        if  ! ps ax | grep -v grep | grep $GPROXY_JAR > /dev/null ; then
+            rm -f $PID_PATH_NAME
+            echo "Starting $SERVICE_NAME ..."
+            cd $GPROXY_PATH
+            [ -f /var/log/gproxy.log ] && rm /var/log/gproxy.log
+            nohup java -Xmx256m -jar $GPROXY_JAR /tmp 2>> /var/log/gproxy.log >> /dev/null  &
+            echo $! > $PID_PATH_NAME
+            (tail -f /var/log/gproxy.log & P=$! ; sleep 10; kill -9 $P) | grep INFO:
+        else
+            status
+        fi
+}
+
+stop() {
+  if [ -f $PID_PATH_NAME ]; then
+            PID=$(cat $PID_PATH_NAME);
+            echo "$SERVICE_NAME stopping ..."
+            kill $PID;
+            rm -f $PID_PATH_NAME
+            sleep 10
+            status
+        else
+            echo "$SERVICE_NAME is not running ..."
+        fi
+}
+
+
+case $1 in
+    start)
+        start
+    ;;
+    stop)
+        stop
+    ;;
+    status)
+        status
+    ;;
+    restart)
+        stop
+        start
+    ;;
+    *)
+        echo "Usage: gproxy {start|stop|status|restart}"
+        exit 1
+    ;;
+esac

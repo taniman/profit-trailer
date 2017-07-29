@@ -305,6 +305,12 @@ public class GunbotProxyService {
 	@Caching(evict = {@CacheEvict(value = "openOrders", allEntries = true),
 			@CacheEvict(value = "completeBalances", allEntries = true)})
 	public synchronized String buyOrderWithProtection(String key, String currencyPair, BigDecimal buyPrice, BigDecimal amount) {
+		boolean testMode = Boolean.parseBoolean(util.getConfigurationProperty("testMode"));
+		if (testMode) {
+			logger.info("Test mode: We bought {}", currencyPair);
+			return "";
+		}
+
 		PoloniexTradingAPIClient tmpTradingAPIClient;
 		if (isUsingMultipleMarkets()) {
 			tmpTradingAPIClient = getMultiMarketTradingClient(key);
@@ -324,6 +330,11 @@ public class GunbotProxyService {
 	@Caching(evict = {@CacheEvict(value = "openOrders", allEntries = true),
 			@CacheEvict(value = "completeBalances", allEntries = true)})
 	public synchronized String sellOrder(String key, String currencyPair, BigDecimal sellPrice, BigDecimal amount) {
+		boolean testMode = Boolean.parseBoolean(util.getConfigurationProperty("testMode"));
+		if (testMode) {
+			logger.info("Test mode: We sold {}", currencyPair);
+			return "";
+		}
 		PoloniexTradingAPIClient tmpTradingAPIClient;
 		if (isUsingMultipleMarkets()) {
 			tmpTradingAPIClient = getMultiMarketTradingClient(key);
