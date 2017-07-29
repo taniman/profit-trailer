@@ -3,8 +3,8 @@ package nl.komtek.gpi.application;
 import net.sf.ehcache.Cache;
 import org.apache.catalina.connector.Connector;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.cache.CacheManager;
@@ -19,6 +19,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executors;
 
 /**
@@ -42,7 +44,15 @@ public class Application {
 	private boolean doubleBuyProtection;
 
 	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
+		Map<String, Object> props = new HashMap<>();
+		props.put("server.port", 443);
+		props.put("server.ssl.key-store", "classpath:poloniex.keystore");
+		props.put("server.ssl.key-store-password", "poloniex");
+		props.put("server.ssl.key-password", "poloniex");
+		new SpringApplicationBuilder()
+				.sources(Application.class)
+				.properties(props)
+				.run(args);
 	}
 
 	@Bean
@@ -56,7 +66,6 @@ public class Application {
 		Cache balancesCache = new Cache("balances", 5, false, true, 0, 0);
 		Cache orderBookCache = new Cache("orderBook", 5, false, true, 0, 0);
 		Cache publicTradeHistoryCache = new Cache("publicTradeHistory", 5, false, true, 0, 0);
-
 
 		cacheManager.addCache(tickerCache);
 		cacheManager.addCache(tradeHistoryCache);

@@ -305,7 +305,7 @@ public class GunbotProxyController {
 			BigDecimal btcValue = BigDecimal.valueOf(element.getAsJsonObject().get("btcValue").getAsDouble());
 
 			if (available.doubleValue() == 0) {
-				continue;
+				filteredObject.add(entry.getKey().toString(), element);
 			}
 
 			double approximatePrice = btcValue.doubleValue() / available.add(onOrders).doubleValue();

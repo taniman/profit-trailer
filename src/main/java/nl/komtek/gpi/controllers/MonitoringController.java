@@ -10,6 +10,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -29,7 +30,7 @@ public class MonitoringController {
 	private ResourceLoader resourceLoader;
 	@Autowired
 	private ResourcePatternResolver resourcePatternResolver;
-	@Value("${gunbot.location}")
+	@Value("${gunbot.location:}")
 	private String gunbotLocation;
 	private Gson gson = new Gson();
 	@Autowired
@@ -62,6 +63,7 @@ public class MonitoringController {
 			market = "BTC";
 		}
 		modelMap.put("balance", gunbotProxyService.getBTCBalance(market));
+		modelMap.put("gunbotLocation", !StringUtils.isEmpty(gunbotLocation));
 		return new ModelAndView("index", modelMap);
 	}
 }
