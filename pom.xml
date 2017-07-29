@@ -5,7 +5,7 @@
 
     <groupId>nl.komtek</groupId>
     <artifactId>GunbotProxyCommunity</artifactId>
-    <version>0.9.8</version>
+    <version>0.9.9</version>
     <packaging>jar</packaging>
 
     <name>GunbotProxyCommunity</name>
@@ -83,7 +83,7 @@
         <dependency>
             <groupId>com.cf</groupId>
             <artifactId>PoloniexClient</artifactId>
-            <version>1.1.2</version>
+            <version>1.1.3</version>
         </dependency>
 
         <dependency>

@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.ZoneOffset;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -49,8 +50,51 @@ public class GunbotProxyController {
 	@RequestMapping(value = "/public/**")
 	@ResponseBody
 	public String interceptAllCalls(HttpServletRequest request) {
-		logger.debug("intercepted -- " + request.getRequestURL() + "?" + request.getQueryString() + "?command=" + request.getParameter("command"));
+		logger.info("intercepted -- " + request.getRequestURL() + "?" + request.getQueryString() + "?command=" + request.getParameter("command"));
 		return "intercepted";
+	}
+
+	@RequestMapping(value = "/tradingApi/**")
+	@ResponseBody
+	public String tradingRequests(HttpServletRequest request) {
+		logger.debug(request.getRequestURL() + "??command=" + request.getParameter("command"));
+		request.getParameterMap().keySet().forEach((e) -> System.out.print(e + "-"));
+		return "trading api intercepted";
+	}
+
+	@RequestMapping(value = "/public/**", params = "command=return24hVolume")
+	@ResponseBody
+	public String publicRequestOrderBook(@RequestParam String currencyPair) {
+		return gunbotProxyService.getOrderBook(currencyPair);
+	}
+
+	@RequestMapping(value = "/public/**", params = "command=return24hVolume")
+	@ResponseBody
+	public String publicRequest24hVolume() {
+		return gunbotProxyService.get24hVolume();
+	}
+
+	@RequestMapping(value = "/public/**", params = "command=returnTradeHistory")
+	@ResponseBody
+	public String publicRequestTradeHistory(@RequestParam String currencyPair,
+	                                        @RequestParam(required = false) String start,
+	                                        @RequestParam(required = false) String end) {
+		final long startLong;
+		if (start.indexOf(".") > 0) {
+			startLong = Long.valueOf(start.substring(0, start.indexOf(".")));
+		} else {
+			startLong = Long.valueOf(start);
+		}
+		final long endLong;
+		if (end == null) {
+			Calendar cal = Calendar.getInstance();
+			endLong = cal.getTimeInMillis() / 1000;
+		} else if (end.indexOf(".") > 0) {
+			endLong = Long.valueOf(end.substring(0, end.indexOf(".")));
+		} else {
+			endLong = Long.valueOf(end);
+		}
+		return gunbotProxyService.getPublicTradeHistory(currencyPair, startLong, endLong);
 	}
 
 	@RequestMapping(value = "/public/**", params = "command=returnChartData")
@@ -69,14 +113,6 @@ public class GunbotProxyController {
 	@ResponseBody
 	public String publicRequestTicker() {
 		return gunbotProxyService.getTicker();
-	}
-
-	@RequestMapping(value = "/tradingApi/**")
-	@ResponseBody
-	public String tradingRequests(HttpServletRequest request) {
-		logger.debug(request.getRequestURL() + "??command=" + request.getParameter("command"));
-		request.getParameterMap().keySet().stream().forEach((e) -> System.out.print(e + "-"));
-		return "trading api";
 	}
 
 	@RequestMapping(value = "/tradingApi/**", params = "command=returnCompleteBalances")
@@ -235,14 +271,14 @@ public class GunbotProxyController {
 		return filteredjArray.toString();
 	}
 
-	private JsonArray hideOpenOrders(JsonArray jsonArray){
+	private JsonArray hideOpenOrders(JsonArray jsonArray) {
 
 		for (Iterator<JsonElement> it = jsonArray.iterator(); it.hasNext(); ) {
 			JsonElement element = it.next();
 			JsonObject jsonObject = element.getAsJsonObject();
 			String orderNumber = jsonObject.get("orderNumber").getAsString();
-			String[] orderNumbersToHide = StringUtils.trimAllWhitespace(util.getConfigurationProperty("hideOrders","")).split(",");
-			if (Arrays.asList(orderNumbersToHide).contains(orderNumber)){
+			String[] orderNumbersToHide = StringUtils.trimAllWhitespace(util.getConfigurationProperty("hideOrders", "")).split(",");
+			if (Arrays.asList(orderNumbersToHide).contains(orderNumber)) {
 				it.remove();
 			}
 		}

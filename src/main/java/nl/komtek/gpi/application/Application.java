@@ -54,6 +54,8 @@ public class Application {
 		Cache completeBalancesCache = new Cache("completeBalances", 5, false, true, 0, 0);
 		Cache chartDataCache = new Cache("chartData", 500, false, false, 30, 30);
 		Cache balancesCache = new Cache("balances", 5, false, true, 0, 0);
+		Cache orderBookCache = new Cache("orderBook", 5, false, true, 0, 0);
+		Cache publicTradeHistoryCache = new Cache("publicTradeHistory", 5, false, true, 0, 0);
 
 
 		cacheManager.addCache(tickerCache);
@@ -62,6 +64,8 @@ public class Application {
 		cacheManager.addCache(completeBalancesCache);
 		cacheManager.addCache(chartDataCache);
 		cacheManager.addCache(balancesCache);
+		cacheManager.addCache(orderBookCache);
+		cacheManager.addCache(publicTradeHistoryCache);
 
 		if (doubleBuyProtectionSeconds > 0) {
 			Cache buyOrderProtectionCache = new Cache("buyOrderProtection", 100, false, false, doubleBuyProtectionSeconds, doubleBuyProtectionSeconds);

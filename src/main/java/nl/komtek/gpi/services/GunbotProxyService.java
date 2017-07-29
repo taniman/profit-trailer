@@ -180,6 +180,40 @@ public class GunbotProxyService {
 		return result;
 	}
 
+	@Cacheable(value = "orderBook", key = "#currencyPair")
+	public String getOrderBook(String currencyPair) {
+		return getOrderBookScheduled(currencyPair);
+	}
+
+	public String get24hVolume() {
+		return publicClient.return24Volume();
+	}
+
+	@CachePut(value = "orderBook", key = "#currencyPair")
+	public String getOrderBookScheduled(String currencyPair) {
+		String result = Failsafe.with(retryPolicy)
+				.onFailedAttempt(this::handleException)
+				.get(() -> analyzeResult(publicClient.returnOrderBook(currencyPair)));
+
+		logger.debug("OrderBook: " + result);
+
+		return result;
+	}
+
+	@Cacheable(value = "publicTradeHistory", key = "#currencyPair", sync = true)
+	public String getPublicTradeHistory(String currencyPair, long start, long end) {
+		return getPublicTradeHistoryScheduled(currencyPair, start, end);
+	}
+
+	@CachePut(value = "publicTradeHistory", key = "#market")
+	public String getPublicTradeHistoryScheduled(String currencyPair, long start, long end) {
+		String result = Failsafe.with(retryPolicy)
+				.onFailedAttempt(this::handleException)
+				.get(() -> analyzeResult(publicClient.returnTradeHistory(currencyPair, start, end)));
+		logger.debug(currencyPair + "-" + "public trade history: " + result);
+		return result;
+	}
+
 	@Cacheable(value = "tradeHistory", key = "#market", sync = true)
 	public String getTradeHistory(String market) {
 		return getTradeHistoryScheduled(market);
