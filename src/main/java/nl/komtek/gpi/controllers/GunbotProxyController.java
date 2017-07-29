@@ -80,13 +80,17 @@ public class GunbotProxyController {
 	public String publicRequestTradeHistory(@RequestParam String currencyPair,
 	                                        @RequestParam(required = false) String start,
 	                                        @RequestParam(required = false) String end) {
-		final long startLong;
+		long startLong;
 		if (start.indexOf(".") > 0) {
 			startLong = Long.valueOf(start.substring(0, start.indexOf(".")));
+			//Special fix for gunbot
+			Calendar calStart = Calendar.getInstance();
+			calStart.add(Calendar.SECOND, -90);
+			startLong = calStart.getTimeInMillis() / 1000;
 		} else {
 			startLong = Long.valueOf(start);
 		}
-		final long endLong;
+		long endLong;
 		if (end == null) {
 			Calendar cal = Calendar.getInstance();
 			endLong = cal.getTimeInMillis() / 1000;
