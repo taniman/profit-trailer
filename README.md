@@ -19,6 +19,7 @@ Open ALLPAIRS-params.js and at the botom after module.exports = config; put the 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";<br />
 <br />
 Optionally run gunbot using one of the suplied pm2 json files. (required for version 3.3.3/4)<br />
+Put the files in the same directory as GB folder. edit files if necessary<br />
 pm2-gunbotbot-linux.json <br />
 pm2-gunbotbot-windows.json <br />
 This will set the NODE_TLS line for you. gunbot log will be viewable from pm2 log. <br />
