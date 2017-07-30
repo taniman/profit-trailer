@@ -14,9 +14,11 @@ https://github.com/taniman/gunbotproxycommunity/releases <br />
 <br />
 Put the jar file in a directory <br />
 Put application.properties in the same directory and fill in your apiKeys and secrets <br />
+<br />
 Open ALLPAIRS-params.js and at the botom after module.exports = config; put the following line <br />
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";<br />
-Optionally run gunbot using one of the json files in the releases. (required for version 3.3.3/4)<br />
+<br />
+Optionally run gunbot using one of the suplied pm2 json files. (required for version 3.3.3/4)<br />
 pm2-gunbotbot-linux.json <br />
 pm2-gunbotbot-windows.json <br />
 This will set the NODE_TLS line for you. gunbot log will be viewable from pm2 log. <br />
