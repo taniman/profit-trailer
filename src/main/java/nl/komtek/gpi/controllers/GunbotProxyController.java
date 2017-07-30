@@ -82,10 +82,17 @@ public class GunbotProxyController {
 	                                        @RequestParam(required = false) String end) {
 		long startLong;
 		if (start.indexOf(".") > 0) {
-			startLong = Long.valueOf(start.substring(0, start.indexOf(".")));
 			//Special fix for gunbot
+			String tradeHistoryMinutes = util.getConfigurationProperty("tradeHistoryMinutes");
+			Integer tradeHistory = 120;
+			if (tradeHistoryMinutes != null) {
+				try {
+					tradeHistory = Integer.parseInt(util.getConfigurationProperty("tradeHistoryMinutes"));
+				} catch (NumberFormatException e) {
+				}
+			}
 			Calendar calStart = Calendar.getInstance();
-			calStart.add(Calendar.SECOND, -90);
+			calStart.add(Calendar.MINUTE, -tradeHistory);
 			startLong = calStart.getTimeInMillis() / 1000;
 		} else {
 			startLong = Long.valueOf(start);

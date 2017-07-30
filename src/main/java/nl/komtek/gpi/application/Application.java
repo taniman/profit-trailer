@@ -64,8 +64,8 @@ public class Application {
 		Cache completeBalancesCache = new Cache("completeBalances", 5, false, true, 0, 0);
 		Cache chartDataCache = new Cache("chartData", 500, false, false, 30, 30);
 		Cache balancesCache = new Cache("balances", 5, false, true, 0, 0);
-		Cache orderBookCache = new Cache("orderBook", 100, true, true, 0, 0);
-		Cache publicTradeHistoryCache = new Cache("publicTradeHistory", 500, false, true, 0, 0);
+		Cache orderBookCache = new Cache("orderBook", 100, true, false, 5, 5);
+		Cache publicTradeHistoryCache = new Cache("publicTradeHistory", 500, true, false, 5, 5);
 
 		cacheManager.addCache(tickerCache);
 		cacheManager.addCache(tradeHistoryCache);
