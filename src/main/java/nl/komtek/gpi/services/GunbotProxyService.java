@@ -450,4 +450,11 @@ public class GunbotProxyService {
 				.onFailedAttempt(this::handleException)
 				.get(() -> analyzeResult(tradingAPIClient.returnOpenOrders("ALL")));
 	}
+
+	public String checkMultiMarketTradingKey(String apiKey) {
+		PoloniexTradingAPIClient tradingAPIClient = poloniexMultiMarketTradingAPIClients.get(apiKey);
+		return Failsafe.with(retryPolicy)
+				.onFailedAttempt(this::handleException)
+				.get(() -> analyzeResult(tradingAPIClient.returnOpenOrders("ALL")));
+	}
 }

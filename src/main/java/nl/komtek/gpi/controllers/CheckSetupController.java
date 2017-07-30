@@ -50,41 +50,22 @@ public class CheckSetupController {
 	private Map<String, String> setupData() {
 		Map<String, String> setupData = new HashMap<>();
 
-		try {
-			String keyName = "default_apiKey";
-			String secretName = "default_apiSecret";
-			String apiKey = util.getEnvProperty(keyName);
-			String apiSecret = util.getEnvProperty(secretName);
-			if (StringUtils.isEmpty(apiKey) || StringUtils.isEmpty(apiSecret)) {
-				setupData.put(keyName, String.format("Please setup %s and %s", keyName, secretName));
-			} else {
-				gunbotProxyService.analyzeResult(gunbotProxyService.checkDefaultKey("default"));
-				setupData.put("defaultKey", "Looking good!");
+		if (!gunbotProxyService.isUsingMultipleMarkets()) {
+			checkApiKeysForMarket(setupData, "");
+		} else {
+			if (gunbotProxyService.isActiveMarket("BTC")) {
+				checkApiKeysForMarket(setupData, "BTC_");
 			}
-		} catch (Exception e) {
-			setupData.put("defaultKey", e.getMessage());
-		}
-
-		for (int i = 1; i <= 10; i++) {
-			String keyName = String.format("apiKey%d", i);
-			String secretName = String.format("apiSecret%d", i);
-			String apiKey = util.getEnvProperty(keyName);
-			String apiSecret = util.getEnvProperty(secretName);
-			if (i == 1 && (StringUtils.isEmpty(apiKey) || StringUtils.isEmpty(apiSecret))) {
-				setupData.put(keyName, String.format("Please setup %s and %s", keyName, secretName));
-				break;
+			if (gunbotProxyService.isActiveMarket("ETH")) {
+				checkApiKeysForMarket(setupData, "ETH_");
 			}
-			if (StringUtils.isEmpty(apiKey) || StringUtils.isEmpty(apiSecret)) {
-				break;
+			if (gunbotProxyService.isActiveMarket("XMR")) {
+				checkApiKeysForMarket(setupData, "XMR_");
 			}
-			try {
-				gunbotProxyService.analyzeResult(gunbotProxyService.checkTradingKey(apiKey));
-				setupData.put(keyName, "Looking good!");
-			} catch (Exception e) {
-				setupData.put(keyName, e.getMessage());
+			if (gunbotProxyService.isActiveMarket("USDT")) {
+				checkApiKeysForMarket(setupData, "USDT_");
 			}
 		}
-
 		//check if hostfile was setup correctly
 		try {
 			InetAddress address = InetAddress.getByName("poloniex.com");
@@ -124,5 +105,50 @@ public class CheckSetupController {
 			setupData.put("Gunbot location (Optional)", "You cannot use monitoring without this");
 		}
 		return setupData;
+	}
+
+	private void checkApiKeysForMarket(Map<String, String> setupData, String market) {
+		String keyName = String.format("default_%sapiKey", market);
+		String secretName = String.format("default_%sapiSecret", market);
+		try {
+			String apiKey = util.getEnvProperty(keyName);
+			String apiSecret = util.getEnvProperty(secretName);
+			if (StringUtils.isEmpty(apiKey) || StringUtils.isEmpty(apiSecret)) {
+				setupData.put(keyName, String.format("Please setup %s and %s", keyName, secretName));
+			} else {
+				String theMarket = market.replace("_", "");
+				if (StringUtils.isEmpty(theMarket)) {
+					theMarket = "default";
+				}
+				gunbotProxyService.analyzeResult(gunbotProxyService.checkDefaultKey(theMarket));
+				setupData.put(keyName, "Looking good!");
+			}
+		} catch (Exception e) {
+			setupData.put(keyName, e.getMessage());
+		}
+
+		for (int i = 1; i <= 10; i++) {
+			keyName = String.format("%sapiKey%d", market, i);
+			secretName = String.format("%sapiSecret%d", market, i);
+			String apiKey = util.getEnvProperty(keyName);
+			String apiSecret = util.getEnvProperty(secretName);
+			if (i == 1 && (StringUtils.isEmpty(apiKey) || StringUtils.isEmpty(apiSecret))) {
+				setupData.put(keyName, String.format("Please setup %s and %s", keyName, secretName));
+				break;
+			}
+			if (StringUtils.isEmpty(apiKey) || StringUtils.isEmpty(apiSecret)) {
+				break;
+			}
+			try {
+				if (StringUtils.isEmpty(market)) {
+					gunbotProxyService.analyzeResult(gunbotProxyService.checkTradingKey(apiKey));
+				} else {
+					gunbotProxyService.analyzeResult(gunbotProxyService.checkMultiMarketTradingKey(apiKey));
+				}
+				setupData.put(keyName, "Looking good!");
+			} catch (Exception e) {
+				setupData.put(keyName, e.getMessage());
+			}
+		}
 	}
 }
