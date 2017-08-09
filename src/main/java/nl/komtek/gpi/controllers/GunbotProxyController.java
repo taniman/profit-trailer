@@ -2,7 +2,6 @@ package nl.komtek.gpi.controllers;
 
 import com.cf.data.map.poloniex.PoloniexDataMapper;
 import com.cf.data.model.poloniex.PoloniexChartData;
-import com.cf.data.model.poloniex.PoloniexCompleteBalance;
 import com.cf.data.model.poloniex.PoloniexTradeHistory;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -136,10 +135,8 @@ public class GunbotProxyController {
 			String key = request.getHeader("key");
 			market = gunbotProxyService.getMarket(key);
 		}
-		String result = gunbotProxyService.getCompleteBalances(market);
-		result = hideDust(result);
 
-		return result;
+		return gunbotProxyService.getCompleteBalances(market);
 	}
 
 	@RequestMapping(value = "/tradingApi/**", params = "command=returnOpenOrders")
@@ -201,16 +198,6 @@ public class GunbotProxyController {
 	                                @RequestParam String currencyPair,
 	                                @RequestParam BigDecimal rate,
 	                                @RequestParam BigDecimal amount) throws IOException {
-
-		boolean globalSellOnlyMode = Boolean.parseBoolean(util.getConfigurationProperty("sellOnlyMode"));
-		boolean pairSellOnlyMode = Boolean.parseBoolean(util.getConfigurationProperty(String.format("%s_sellOnlyMode", currencyPair)));
-		if (globalSellOnlyMode || pairSellOnlyMode) {
-			JsonObject jsonObject = new JsonObject();
-			String message = String.format("You are not allowed to buy. Sell Only mode is active for %s", currencyPair);
-			jsonObject.addProperty("error", message);
-			logger.info(jsonObject.toString());
-			return jsonObject.toString();
-		}
 
 		String key = request.getHeader("key");
 		if (doubleBuyProtection || doubleBuyProtectionSeconds > 0) {
@@ -298,35 +285,5 @@ public class GunbotProxyController {
 			}
 		}
 		return jsonArray;
-	}
-
-	private String hideDust(String result) {
-		boolean hidedust = Boolean.parseBoolean(util.getConfigurationProperty("hideDust"));
-		if (!hidedust) {
-			return result;
-		}
-		JsonParser jsonParser = new JsonParser();
-		JsonElement jElement = jsonParser.parse(result);
-		JsonObject jObject = jElement.getAsJsonObject();
-		JsonObject filteredObject = new JsonObject();
-		for (Map.Entry entry : jObject.entrySet()) {
-			JsonElement element = (JsonElement) entry.getValue();
-			BigDecimal available = BigDecimal.valueOf(element.getAsJsonObject().get("available").getAsDouble());
-			BigDecimal onOrders = BigDecimal.valueOf(element.getAsJsonObject().get("onOrders").getAsDouble());
-			BigDecimal btcValue = BigDecimal.valueOf(element.getAsJsonObject().get("btcValue").getAsDouble());
-
-			if (available.doubleValue() == 0) {
-				filteredObject.add(entry.getKey().toString(), element);
-			}
-
-			double approximatePrice = btcValue.doubleValue() / available.add(onOrders).doubleValue();
-			double availableValue = available.doubleValue() * approximatePrice;
-			if (availableValue < 0.00015) {
-				available = BigDecimal.ZERO;
-			}
-			PoloniexCompleteBalance balance = new PoloniexCompleteBalance(available, onOrders, btcValue);
-			filteredObject.add(entry.getKey().toString(), jsonParser.parse(balance.toString()));
-		}
-		return filteredObject.toString();
 	}
 }

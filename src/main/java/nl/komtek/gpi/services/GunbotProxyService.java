@@ -3,6 +3,7 @@ package nl.komtek.gpi.services;
 import com.cf.PriceDataAPIClient;
 import com.cf.client.poloniex.PoloniexPublicAPIClient;
 import com.cf.client.poloniex.PoloniexTradingAPIClient;
+import com.cf.data.model.poloniex.PoloniexCompleteBalance;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -245,7 +246,8 @@ public class GunbotProxyService {
 
 	@Cacheable(value = "completeBalances", key = "#market", sync = true)
 	public String getCompleteBalances(String market) {
-		return getCompleteBalancesScheduled(market);
+		String result = getCompleteBalancesScheduled(market);
+		return hideDust(result);
 	}
 
 	@CachePut(value = "completeBalances", key = "#market")
@@ -320,9 +322,20 @@ public class GunbotProxyService {
 			@CacheEvict(value = "completeBalances", allEntries = true)})
 	public synchronized String buyOrderWithProtection(String key, String currencyPair, BigDecimal buyPrice, BigDecimal amount) {
 		boolean testMode = Boolean.parseBoolean(util.getConfigurationProperty("testMode"));
+		boolean globalSellOnlyMode = Boolean.parseBoolean(util.getConfigurationProperty("sellOnlyMode"));
+		boolean pairSellOnlyMode = Boolean.parseBoolean(util.getConfigurationProperty(String.format("%s_sellOnlyMode", currencyPair)));
+
 		if (testMode) {
 			logger.info("Test mode: We bought {}", currencyPair);
 			return "";
+		}
+
+		if (globalSellOnlyMode || pairSellOnlyMode) {
+			JsonObject jsonObject = new JsonObject();
+			String message = String.format("You are not allowed to buy. Sell Only mode is active for %s", currencyPair);
+			jsonObject.addProperty("error", message);
+			logger.info(jsonObject.toString());
+			return jsonObject.toString();
 		}
 
 		PoloniexTradingAPIClient tmpTradingAPIClient;
@@ -456,5 +469,37 @@ public class GunbotProxyService {
 		return Failsafe.with(retryPolicy)
 				.onFailedAttempt(this::handleException)
 				.get(() -> analyzeResult(tradingAPIClient.returnOpenOrders("ALL")));
+	}
+
+	private String hideDust(String result) {
+		boolean hidedust = Boolean.parseBoolean(util.getConfigurationProperty("hideDust"));
+		if (!hidedust) {
+			return result;
+		}
+		JsonParser jsonParser = new JsonParser();
+		JsonElement jElement = jsonParser.parse(result);
+		JsonObject jObject = jElement.getAsJsonObject();
+		JsonObject filteredObject = new JsonObject();
+		for (Map.Entry entry : jObject.entrySet()) {
+			JsonElement element = (JsonElement) entry.getValue();
+			BigDecimal available = BigDecimal.valueOf(element.getAsJsonObject().get("available").getAsDouble());
+			BigDecimal onOrders = BigDecimal.valueOf(element.getAsJsonObject().get("onOrders").getAsDouble());
+			BigDecimal btcValue = BigDecimal.valueOf(element.getAsJsonObject().get("btcValue").getAsDouble());
+
+			if (available.doubleValue() == 0) {
+				filteredObject.add(entry.getKey().toString(), element);
+			}
+
+			double approximatePrice = btcValue.doubleValue() / available.add(onOrders).doubleValue();
+			double availableValue = available.doubleValue() * approximatePrice;
+			if (!entry.getKey().equals("USDT") && availableValue < 0.00015) {
+				available = BigDecimal.ZERO;
+			} else if (entry.getKey().equals("USDT") && available.doubleValue() < 1) {
+				available = BigDecimal.ZERO;
+			}
+			PoloniexCompleteBalance balance = new PoloniexCompleteBalance(available, onOrders, btcValue);
+			filteredObject.add(entry.getKey().toString(), jsonParser.parse(balance.toString()));
+		}
+		return filteredObject.toString();
 	}
 }
