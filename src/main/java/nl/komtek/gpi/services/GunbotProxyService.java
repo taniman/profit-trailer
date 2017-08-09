@@ -246,8 +246,7 @@ public class GunbotProxyService {
 
 	@Cacheable(value = "completeBalances", key = "#market", sync = true)
 	public String getCompleteBalances(String market) {
-		String result = getCompleteBalancesScheduled(market);
-		return hideDust(result);
+		return getCompleteBalancesScheduled(market);
 	}
 
 	@CachePut(value = "completeBalances", key = "#market")
@@ -256,6 +255,8 @@ public class GunbotProxyService {
 		String result = Failsafe.with(retryPolicy)
 				.onFailedAttempt(this::handleException)
 				.get(() -> analyzeResult(tradingAPIClient.returnCompleteBalances()));
+
+		result = hideDust(result);
 		logger.debug(market + "-" + "complete balances: " + result);
 		return result;
 	}
@@ -408,6 +409,8 @@ public class GunbotProxyService {
 			throw new ProxyHandledException("No value was returned");
 		} else if (result.contains("Nonce")) {
 			throw new ProxyHandledException("nonce error: " + result);
+		} else if (result.contains("Invalid API")) {
+			throw new ProxyHandledException(result);
 		} else if (result.contains("Connection timed out")) {
 			throw new ProxyHandledException(result);
 		}
@@ -451,10 +454,9 @@ public class GunbotProxyService {
 
 	public String checkDefaultKey(String market) {
 		PoloniexTradingAPIClient tradingAPIClient = getMarketDefaultTradingClient(market);
-		String result = Failsafe.with(retryPolicy)
+		return Failsafe.with(retryPolicy)
 				.onFailedAttempt(this::handleException)
 				.get(() -> analyzeResult(tradingAPIClient.returnOpenOrders("ALL")));
-		return result;
 	}
 
 	public String checkTradingKey(String apiKey) {

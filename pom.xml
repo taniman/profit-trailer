@@ -5,7 +5,7 @@
 
     <groupId>nl.komtek</groupId>
     <artifactId>GunbotProxyCommunity</artifactId>
-    <version>0.9.9</version>
+    <version>0.9.9.1</version>
     <packaging>jar</packaging>
 
     <name>GunbotProxyCommunity</name>
