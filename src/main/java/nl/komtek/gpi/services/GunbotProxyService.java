@@ -408,6 +408,8 @@ public class GunbotProxyService {
 			throw new ProxyHandledException("No value was returned");
 		} else if (result.contains("Nonce")) {
 			throw new ProxyHandledException("nonce error: " + result);
+		} else if (result.contains("Invalid API")) {
+			throw new ProxyHandledException(result);
 		} else if (result.contains("Connection timed out")) {
 			throw new ProxyHandledException(result);
 		}
@@ -451,10 +453,9 @@ public class GunbotProxyService {
 
 	public String checkDefaultKey(String market) {
 		PoloniexTradingAPIClient tradingAPIClient = getMarketDefaultTradingClient(market);
-		String result = Failsafe.with(retryPolicy)
+		return Failsafe.with(retryPolicy)
 				.onFailedAttempt(this::handleException)
 				.get(() -> analyzeResult(tradingAPIClient.returnOpenOrders("ALL")));
-		return result;
 	}
 
 	public String checkTradingKey(String apiKey) {
