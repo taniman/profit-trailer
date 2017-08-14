@@ -44,6 +44,8 @@ public class GunbotProxyService {
 	private Util util;
 	@Value("${connection.maxRetries:6}")
 	private int maxRetries;
+	@Value("${connection.nonceLength:17}")
+	private int nonceLength;
 	private Map<String, PoloniexTradingAPIClient> poloniexDefaultAPIClients = new HashMap<>();
 	private Map<String, PoloniexTradingAPIClient> poloniexTradingAPIClients = new HashMap<>();
 	private Map<String, String> marketMapping = new HashMap<>();
@@ -61,9 +63,8 @@ public class GunbotProxyService {
 		if (!createMarketMapping()) {
 			String apiKey = util.getEnvProperty("default_apiKey");
 			String apiSecret = util.getEnvProperty("default_apiSecret");
-			poloniexDefaultAPIClients.put("default", new PoloniexTradingAPIClient(apiKey, apiSecret));
+			poloniexDefaultAPIClients.put("default", new PoloniexTradingAPIClient(apiKey, apiSecret, nonceLength));
 			createDefaultTradingClients();
-
 		} else {
 			if (!createMarketDefaultApiClients("BTC")) {
 				return;
@@ -97,7 +98,7 @@ public class GunbotProxyService {
 				SpringApplication.exit(applicationContext);
 				return false;
 			} else {
-				poloniexDefaultAPIClients.put(market, new PoloniexTradingAPIClient(apiKey, apiSecret));
+				poloniexDefaultAPIClients.put(market, new PoloniexTradingAPIClient(apiKey, apiSecret, nonceLength));
 			}
 		}
 		return true;
@@ -114,7 +115,7 @@ public class GunbotProxyService {
 					break;
 				}
 				marketMapping.put(apiKey, market);
-				poloniexMultiMarketTradingAPIClients.put(apiKey, new PoloniexTradingAPIClient(apiKey, apiSecret));
+				poloniexMultiMarketTradingAPIClients.put(apiKey, new PoloniexTradingAPIClient(apiKey, apiSecret, nonceLength));
 			}
 		}
 		return marketMapping.size() > 0 && marketMapping.size() == poloniexMultiMarketTradingAPIClients.size();
@@ -127,7 +128,7 @@ public class GunbotProxyService {
 			if (apiKey == null || apiSecret == null) {
 				break;
 			}
-			poloniexTradingAPIClients.put(apiKey, new PoloniexTradingAPIClient(apiKey, apiSecret));
+			poloniexTradingAPIClients.put(apiKey, new PoloniexTradingAPIClient(apiKey, apiSecret, nonceLength));
 		}
 	}
 
