@@ -18,7 +18,7 @@ Put application.properties in the same directory and fill in your apiKeys and se
 Open ALLPAIRS-params.js and at the botom after module.exports = config; put the following line <br />
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";<br />
 <br />
-Optionally run gunbot using one of the suplied pm2 json files. (required for version 3.3.3/4)<br />
+Optionally run gunbot using one of the suplied pm2 json files. (required for version 3.3.3+, 4.x.x+)<br />
 Put the files in the same directory as GB folder. edit files if necessary<br />
 pm2-gunbotbot-linux.json <br />
 pm2-gunbotbot-windows.json <br />
