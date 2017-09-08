@@ -1,6 +1,10 @@
 # Gunbot Proxy Community Edition
 Free Proxy for Gunbot on Poloniex
 <br />
+
+# Looking for ProxyBot Setup?
+https://github.com/taniman/gunbotproxycommunity/tree/proxybot
+
 # Join the telegram group
 If you have questions after reading the readme
 https://t.me/joinchat/FWYlMkKK-mkrSuj836ehug
