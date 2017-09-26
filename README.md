@@ -6,7 +6,7 @@ Price: 0.015 BTC  
 If you have questions after reading the readme
 https://t.me/joinchat/FWYlMkKK-mkrSuj836ehug
 
-# Checkout the wiki
+# Check out the wiki
 https://github.com/taniman/proxy-bot/wiki/ProxyBot  
 
 # Another guide
