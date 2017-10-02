@@ -1,5 +1,5 @@
 # ProxyBot
-Enhanced Proxy for Gunbot on Poloniex <BR />
+The proxy just got smarter  
 Price: 0.015 BTC  
 <br />
 # Join the telegram group
