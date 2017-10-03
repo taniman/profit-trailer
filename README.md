@@ -10,6 +10,9 @@ https://t.me/joinchat/FWYlMkKK-mkrSuj836ehug
 ### German Channel
 https://t.me/joinchat/FDBA_g1yD6Iw-k46ysvYzA
 
+### Potuguese Channel
+https://t.me/joinchat/EzzWHAyih4JoEMk0XBiezA
+
 # Check out the wiki
 https://github.com/taniman/proxy-bot/wiki/ProxyBot  
 
