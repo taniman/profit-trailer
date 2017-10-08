@@ -80,6 +80,7 @@ pm2 log 'id' <-- this is the id pm2 gave your proxy
 4. Edit application.properties and set
     - telegram.botToken = "your bot token"
     - telegram.chatId = "your chat id"
+    - restart the bot
 
 5. Go to http://localhost:8081/settings/telegramTestMessage to test your telegram setup. You will receive a message if the setup is correct.
 
