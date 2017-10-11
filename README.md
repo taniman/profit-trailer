@@ -40,28 +40,14 @@ http://localhost:8081/checkSetup/
 ### On a Linux VPS
 curl http://localhost:8081/checkSetupLinux/ <br />
 <br />
-All rows except hostfile should say 'Looking good!'<br />
+All rows should say 'Looking good!'<br />
 If this is not the case, than you have an error in your application.properties <br />
 So everything is up and running. <br />
-<br />
-Now for the final step you need to edit your host file. <br />
-On windows C:\Windows\System32\drivers\etc\hosts <br />
-On linux /etc/hosts <br />
-<br />
-Put the following <br />
-127.0.0.1	poloniex.com <br />
-and save your host file.<br />
-
-# Final test
-Open a web browser again and again go to : <br />
-http://localhost:8081/checkSetup/ <br />
-All rows should say 'Looking good!' <br />
-If this is not the case, than you have an error in your application.properties <br />
 
 # Running in the background
 Use the provided pm2 json file.<br />
 If you have pm2 installed just use this command.<br />
-pm2 start pm2-GunbotProxyCommunity.json <br />
+pm2 start pm2-ProxyBot.json <br />
 pm2 save <br />
 This will make sure that pm2 will automatically start the proxy when pm2 reloads. <br />
 <br />
