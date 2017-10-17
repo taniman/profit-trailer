@@ -19,9 +19,6 @@ https://t.me/joinchat/DreUUw-n-aGoi2LunoJTFA
 # Check out the wiki
 https://github.com/taniman/proxy-bot/wiki/ProxyBot  
 
-# Another guide
-<a href="https://gunthy.org/index.php?topic=570.msg3080#msg3080">Diesel's Guide</a>
-
 # How to run
 Download the latest released jar file<br />
 https://github.com/taniman/proxy-bot/releases <br />
