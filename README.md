@@ -19,29 +19,28 @@ https://t.me/joinchat/FWYlMkKK-mkrSuj836ehug
 https://github.com/taniman/proxy-bot/wiki/ProxyBot  
 
 # How to run
-Download the latest released jar file<br />
-https://github.com/taniman/proxy-bot/releases <br />
-<br />
-Put the jar file in a directory <br />
-Put application.properties in the same directory and fill in your apiKeys and secrets <br />
-<br />
-To be able to run the application you need Java 8 <br />
-Open a terminal or command prompt and type <br />
-java -jar ProxyBot.jar -XX:+UseConcMarkSweepGC -Xmx256m -Xms256m<br />
-On OSX or some linux versions you might need to sudo su and then run the java -jar command.<br />
-<br />
-If you did everything correctly the application will start without giving you any error messages.
+Download the latest released jar file  
+https://github.com/taniman/proxy-bot/releases  
+
+1. Make sure you have java 8 installed on your system
+2. Unzip proxybot.zip file  
+3. Fill your apiKeys and secrets in application.properties  
+4. set server.botMode = true in application.properties
+5. Open a terminal or command prompt and type  
+6. java -jar ProxyBot.jar -XX:+UseConcMarkSweepGC -Xmx256m -Xms256m  
+   * On OSX or some linux versions you might need to sudo su and then run the java -jar command.  
+7. If you did everything correctly the application will start without giving you any error messages  
 
 ### On windows
-Open a web browser and go to <br />
+Open a web browser and go to  
 http://localhost:8081/checkSetup/
 
 ### On a Linux VPS
-curl http://localhost:8081/checkSetupLinux/ <br />
-<br />
-All rows should say 'Looking good!'<br />
-If this is not the case, than you have an error in your application.properties <br />
-So everything is up and running. <br />
+curl http://localhost:8081/checkSetupLinux/  
+
+All rows should say 'Looking good!'  
+If this is not the case, than you have an error in your application.properties  
+
 
 # Running in the background
 Use the provided pm2 json file.<br />
@@ -69,8 +68,11 @@ pm2 log 'id' <-- this is the id pm2 gave your proxy
 
 5. Go to http://localhost:8081/settings/telegramTestMessage to test your telegram setup. You will receive a message if the setup is correct.
 
-# Invalid License
-  - Talk to @Elroy on telegram to activate
+# Authorized resellers on telegram
+  - @Elroy (DEV)
+  - Anderson (Portuguese)
+  - @Moondust2010 (German)
+  - @AkaDeCaoS (Spanish)
 
 # Warning
 Please use the proxy on a VPS or machine that you do not use normally. <br />
