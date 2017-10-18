@@ -70,7 +70,7 @@ pm2 log 'id' <-- this is the id pm2 gave your proxy
 
 # Authorized resellers on telegram
   - @Elroy (DEV)
-  - Anderson (Portuguese)
+  - @Anderson_drsub (Portuguese)
   - @Moondust2010 (German)
   - @AkaDeCaoS (Spanish)
 
