@@ -9,9 +9,10 @@ https://t.me/joinchat/FWYlMkKK-mkrSuj836ehug
 
 |Channel Language   | Channel link                                  |
 |-------------------|-----------------------------------------------|
-|German Channel     | https://t.me/joinchat/FDBA_g1yD6Iw-k46ysvYzA  |
-|Potuguese Channel  | https://t.me/joinchat/EzzWHAyih4JoEMk0XBiezA  |
-|Russian Channel    | https://t.me/joinchat/DreUUw-n-aGoi2LunoJTFA  |
+|German             | https://t.me/joinchat/FDBA_g1yD6Iw-k46ysvYzA  |
+|Potuguese          | https://t.me/joinchat/EzzWHAyih4JoEMk0XBiezA  |
+|Russian            | https://t.me/joinchat/DreUUw-n-aGoi2LunoJTFA  |
+|Korean             | https://t.me/joinchat/DqRTeBHA8KY5_vwKBj3JzA  |
 
 
 
