@@ -75,6 +75,8 @@ pm2 log 'id' <-- this is the id pm2 gave your proxy
   - @Moondust2010 (German)
   - @AkaDeCaoS (Spanish)
   - @T1M3C (Russian)
+  - @Another_Diesel (US)
+  - @billycoin (Chinese)
 
 # Warning
 Please use the proxy on a VPS or machine that you do not use normally. <br />
