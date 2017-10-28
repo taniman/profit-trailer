@@ -77,6 +77,7 @@ pm2 log 'id' <-- this is the id pm2 gave your bot
   - @Another_Diesel (US)  
   - @billycoin (Chinese)  
   - @freebits (Korean)
+  - @djnaffie (Dutch)
   
   No one responding?
   - @Elroy (DEV)
