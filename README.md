@@ -12,6 +12,7 @@ https://t.me/joinchat/FWYlMkKK-mkrSuj836ehug
 |Potuguese          | https://t.me/joinchat/EzzWHAyih4JoEMk0XBiezA  |
 |Russian            | https://t.me/joinchat/DreUUw-n-aGoi2LunoJTFA  |
 |Korean             | https://t.me/joinchat/DqRTeBHA8KY5_vwKBj3JzA  |
+|Spanish            | https://t.me/joinchat/FmiiRhEiz1VMEfaf1ch4Hg  |
 
 
 
@@ -68,7 +69,7 @@ pm2 log 'id' <-- this is the id pm2 gave your bot
 5. Go to http://localhost:8081/settings/telegramTestMessage to test your telegram setup. You will receive a message if the setup is correct.
 
 # Authorized resellers on telegram
-  - @Elroy (DEV)
+  All resellers speak English :)
   - @Anderson_drsub (Portuguese)
   - @Moondust2010 (German)
   - @AkaDeCaoS (Spanish)
@@ -76,4 +77,7 @@ pm2 log 'id' <-- this is the id pm2 gave your bot
   - @Another_Diesel (US)  
   - @billycoin (Chinese)  
   - @freebits (Korean)
+  
+  No one responding?
+  - @Elroy (DEV)
 
