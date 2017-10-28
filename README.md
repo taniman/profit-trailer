@@ -25,7 +25,6 @@ https://github.com/taniman/profit-trailer/releases
 1. Make sure you have java 8 installed on your system
 2. Unzip proxybot.zip file  
 3. Fill your apiKeys and secrets in application.properties  
-4. set server.botMode = true in application.properties
 5. Open a terminal or command prompt and type  
 6. java -jar ProxyBot.jar -XX:+UseConcMarkSweepGC -Xmx256m -Xms256m  
    * On OSX or some linux versions you might need to sudo su and then run the java -jar command.  
