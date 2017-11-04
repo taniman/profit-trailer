@@ -27,9 +27,10 @@ https://github.com/taniman/profit-trailer/releases
 2. Unzip proxybot.zip file  
 3. Fill your apiKeys and secrets in application.properties  
 5. Open a terminal or command prompt and type  
-6. java -jar ProfitTrailer.jar -XX:+UseConcMarkSweepGC -Xmx256m -Xms256m  
+6. CD to the ProfitTrailer directory
+7. java -jar ProfitTrailer.jar -XX:+UseConcMarkSweepGC -Xmx256m -Xms256m  
    * On OSX or some linux versions you might need to sudo su and then run the java -jar command.  
-7. If you did everything correctly the application will start without giving you any error messages  
+8. If you did everything correctly the application will start without giving you any error messages  
 
 ### On windows
 Open a web browser and go to  
