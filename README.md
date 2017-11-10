@@ -13,6 +13,7 @@ https://t.me/joinchat/FWYlMkKK-mkrSuj836ehug
 |Russian            | https://t.me/joinchat/DreUUw-n-aGoi2LunoJTFA  |
 |Korean             | https://t.me/joinchat/DqRTeBHA8KY5_vwKBj3JzA  |
 |Spanish            | https://t.me/joinchat/FmiiRhEiz1VMEfaf1ch4Hg  |
+|Dutch              | https://t.me/profittrailernl                  |
 
 
 
@@ -24,7 +25,7 @@ Download the latest released jar file
 https://github.com/taniman/profit-trailer/releases  
 
 1. Make sure you have java 8 installed on your system
-2. Unzip proxybot.zip file  
+2. Unzip ProfitTrailer.zip file  
 3. Fill your apiKeys and secrets in application.properties  
 5. Open a terminal or command prompt and type  
 6. CD to the ProfitTrailer directory
@@ -46,7 +47,7 @@ If this is not the case, than you have an error in your application.properties
 # Running in the background
 Use the provided pm2 json file.<br />
 If you have pm2 installed just use this command.<br />
-pm2 start pm2-ProxyBot.json <br />
+pm2 start pm2-ProfitTrailer.json <br />
 pm2 save <br />
 This will make sure that pm2 will automatically start the bot when pm2 reloads. <br />
 <br />
