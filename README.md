@@ -80,6 +80,8 @@ pm2 log 'id' <-- this is the id pm2 gave your bot
   - @billycoin (Chinese)  
   - @freebits (Korean)
   - @djnaffie (Dutch)
+  - @lowprofiler (Danish & Norwegian)
+  - @gcan9 (Swedish & Greek)
   
   No one responding?
   - @Elroy (DEV)
