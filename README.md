@@ -9,7 +9,7 @@ https://t.me/joinchat/FWYlMkKK-mkrSuj836ehug
 |Channel Language   | Channel link                                  |
 |-------------------|-----------------------------------------------|
 |German             | https://t.me/joinchat/FDBA_g1yD6Iw-k46ysvYzA  |
-|Potuguese          | https://t.me/joinchat/EzzWHAyih4JoEMk0XBiezA  |
+|Portuguese         | https://t.me/joinchat/profittrailer_br        |
 |Russian            | https://t.me/joinchat/DreUUw-n-aGoi2LunoJTFA  |
 |Korean             | https://t.me/joinchat/DqRTeBHA8KY5_vwKBj3JzA  |
 |Spanish            | https://t.me/joinchat/FmiiRhEiz1VMEfaf1ch4Hg  |
