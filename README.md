@@ -26,9 +26,10 @@ https://github.com/taniman/profit-trailer/releases
 
 1. Make sure you have java 8 installed on your system
 2. Unzip ProfitTrailer.zip file  
-3. Fill your apiKeys and secrets in application.properties  
+3. Fill your apiKeys and secrets in application.properties using notepad++ 
+4. Make sure there are no invisible charters behind the apiKey and Secret you fill in.
 5. Open a terminal or command prompt and type  
-6. CD to the ProfitTrailer directory
+6. CD to the ProfitTrailer directory  
 7. java -jar ProfitTrailer.jar -XX:+UseConcMarkSweepGC -Xmx256m -Xms256m  
    * On OSX or some linux versions you might need to sudo su and then run the java -jar command.  
 8. If you did everything correctly the application will start without giving you any error messages  
