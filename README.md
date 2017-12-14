@@ -24,7 +24,7 @@ https://wiki.profittrailer.io/
 # How to run
 https://wiki.profittrailer.io/doku.php/instructions  
 
-# Authorized resellers on telegram
+# Support Team on Telegram
   All resellers speak English :)
   - @Anderson_drsub (Portuguese)
   - @Moondust2010 (German)
