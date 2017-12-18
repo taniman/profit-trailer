@@ -37,4 +37,5 @@ https://wiki.profittrailer.io/doku.php/instructions
   - @djnaffie (Dutch)
   - @lowprofiler (Danish & Norwegian)
   - @gcan9 (Swedish & Greek)
-  - @CryptoGuruOmigus (Japanese) 
+  - @Sids1jain, (Hindi)
+  - @ZenPierre (French) 
