@@ -16,6 +16,7 @@ https://t.me/joinchat/FWYlMkKK-mkrSuj836ehug
 |Dutch              | https://t.me/profittrailernl                  |
 |Chinese            | https://t.me/joinchat/GfcIGQ9Hnnzb47i1Ka0vXA  |
 |French             | https://t.me/joinchat/EkAjxQtTe9vd5eYQY6xNlw  |
+|Vietnamese         | https://t.me/joinchat/F7C8rxEyWD3lzP7lFjJ17g  |
 
 
 
@@ -38,4 +39,5 @@ https://wiki.profittrailer.io/doku.php/instructions
   - @lowprofiler (Danish & Norwegian)
   - @gcan9 (Swedish & Greek)
   - @Sids1jain, (Hindi)
-  - @ZenPierre (French) 
+  - @ZenPierre (French)
+  - @MightAsWell (Vietnamese)
