@@ -17,7 +17,8 @@ https://t.me/joinchat/FWYlMkKK-mkrSuj836ehug
 |Chinese            | https://t.me/joinchat/GfcIGQ9Hnnzb47i1Ka0vXA  |
 |French             | https://t.me/joinchat/EkAjxQtTe9vd5eYQY6xNlw  |
 |Vietnamese         | https://t.me/joinchat/F7C8rxEyWD3lzP7lFjJ17g  |
-
+|Danish & Norwegian | https://t.me/joinchat/GZCwC0WiSZpEozwfym_7jA  |
+|Greek              | 
 
 
 # Check out the wiki
