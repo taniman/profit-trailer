@@ -19,6 +19,7 @@ https://t.me/joinchat/FWYlMkKK-mkrSuj836ehug
 |Vietnamese         | https://t.me/joinchat/F7C8rxEyWD3lzP7lFjJ17g  |
 |Danish & Norwegian | https://t.me/joinchat/GZCwC0WiSZpEozwfym_7jA  |
 |Greek              | https://t.me/joinchat/FuOtHEXU7yCSWzk9f_-5Zg  |
+|Hebrew             | https://t.me/joinchat/FeF9nRH3uo2gWQ5tBVAmMg  |
 
 
 # Check out the wiki
