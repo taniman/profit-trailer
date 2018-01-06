@@ -28,8 +28,8 @@ https://wiki.profittrailer.io/
 # How to run
 https://wiki.profittrailer.io/doku.php/instructions  
 
-# Support Team on Telegram
-  All resellers speak English :)
+# PT Support Team on Telegram
+  All speak English :)
   - @Anderson_drsub (Portuguese)
   - @Moondust2010 (German)
   - @AkaDeCaoS (Spanish)
@@ -43,3 +43,4 @@ https://wiki.profittrailer.io/doku.php/instructions
   - @Sids1jain, (Hindi)
   - @ZenPierre (French)
   - @MightAsWell (Vietnamese)
+  - @shnitzelx (Hebrew)
