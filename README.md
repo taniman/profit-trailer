@@ -35,6 +35,7 @@ https://wiki.profittrailer.io/doku.php/instructions
   - @AkaDeCaoS (Spanish)
   - @T1M3C (Russian)
   - @Another_Diesel (US)  
+  - @iAmVaeVictus (US)
   - @billycoin (Chinese)  
   - @freebits (Korean)
   - @djnaffie (Dutch)
