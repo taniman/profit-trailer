@@ -1,10 +1,10 @@
 # ProfitTrailer
 We trail the trends!
 
-# Join the telegram group
+# Join the Discord group
 If you have questions after reading the readme
 ### Main Channel
-https://t.me/joinchat/FWYlMkKK-mkrSuj836ehug
+https://discord.gg/K9a37Vh
 
 ### Localized groups
 
