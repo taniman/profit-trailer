@@ -25,10 +25,10 @@ https://discord.gg/K9a37Vh
 
 
 # Check out the wiki
-https://wiki.profittrailer.io/  
+https://wiki.profittrailer.com  
 
 # How to run
-https://wiki.profittrailer.io/doku.php/instructions  
+https://wiki.profittrailer.com/doku.php/instructions  
 
 # PT Support Team on Telegram
   All speak English :)
