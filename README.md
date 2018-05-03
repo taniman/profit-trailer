@@ -30,21 +30,21 @@ https://wiki.profittrailer.com
 # How to run
 https://wiki.profittrailer.com/doku.php/instructions  
 
-# PT Support Team on Telegram
+# PT Support Team on Discord & Telegram
   All speak English :)
-  - @Anderson_drsub (Portuguese)
-  - @Moondust2010 (German)
   - @AkaDeCaoS (Spanish)
-  - @T1M3C (Russian)
-  - @Another_Diesel (US)  
-  - @iAmVaeVictus (US)
-  - @billycoin (Chinese)  
-  - @freebits (Korean)
+  - @Anderson_drsub (Portuguese)
+  - @Another_Diesel (US)
+  - @billycoin (Chinese)
   - @djnaffie (Dutch)
-  - @lowprofiler (Danish & Norwegian)
+  - @freebits (Korean)
   - @gcan9 (Swedish & Greek)
-  - @Sids1jain, (Hindi)
-  - @ZenPierre (French)
+  - @gingerman (Canada)
+  - @iAmVaeVictus (US)
+  - @lowprofiler (Danish & Norwegian)
   - @MightAsWell (Vietnamese)
-  - @shnitzelx (Hebrew)
-
+  - @Moondust2010 (German)
+  - @Ofer (Hebrew)
+  - @Sids1jain, (Hindi)
+  - @T1M3C (Russian)
+  - @ZenPierre (French)
