@@ -24,7 +24,7 @@ Operating System:
 ## Current Behavior
 <!--- Tell us what happens and how often -->
 
-##Troubleshooting
+## Troubleshooting
 What have you tried to do to fix it?
 
 ## Possible Solution
