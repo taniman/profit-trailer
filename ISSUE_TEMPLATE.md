@@ -7,11 +7,13 @@ Profit Traile Issue tracker is **ONLY** used for reporting bugs. NO NEW FEATURES
 ## ProfitTrailer info
 Version:
 
+<!--- AFTER you submit you can then tick these boxes --> 
 Exchange:
 - [ ] Bittrex
 - [ ] Binance
 - [ ] Poloniex
 
+<!--- AFTER you submit you can then tick these boxes --> 
 Operating System:
 - [ ] Windows (please specify version)
 - [ ] Ubuntu (please specify version)
@@ -42,9 +44,10 @@ What have you tried to do to fix it?
 <!--- From the GUI please copy your PAIRS, DCA and INDICATORS settings -->
 <!--- You can upload to https://pastebin.com/ or similar -->
 
-## Log files?console output
+## Log files/console output
 <!--- Please provide your log file from ProfitTrailer/log or a complete screenshot -->
 <!--- If possible rename/delete your current log and restart the -->
 <!--- bot so we only get recent/relevant log information --> 
+
 
 
