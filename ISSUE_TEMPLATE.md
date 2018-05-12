@@ -1,7 +1,9 @@
-Your issue may already be reported! Please search before creating one.
-Talk to Discord Support Staff first if you are not certain this is a bug.
+<!--- Your issue may already be reported! Please search before creating one. -->
+<!--- Talk to Discord Support Staff first if you are not certain this is a bug. -->
 
-Profit Traile Issue tracker is **ONLY** used for reporting bugs. NO NEW FEATURES! Use [PT Enahancements](https://github.com/taniman/profit-trailer-enhancements) for Feature Requests.
+<!--- This ProfitTrailer issue tracker is **ONLY** used for reporting bugs. -->
+NO NEW FEATURES! Use [PT Enahancements](https://github.com/taniman/profit-trailer-enhancements) for Feature Requests.
+
 <!--- Provide a general summary of the issue in the Title above -->
 
 ## ProfitTrailer info
@@ -24,10 +26,10 @@ Operating System:
 <!--- Tell us what should happen -->
 
 ## Current Behavior
-<!--- Tell us what happens and how often -->
+<!--- Tell us what you are doing, what happens and how often -->
 
 ## Troubleshooting
-What have you tried to do to fix it?
+<!--- What have you tried to do to fix it? -->
 
 ## Possible Solution
 <!--- Optional, do you have a possible fix/reason for the bug. -->
