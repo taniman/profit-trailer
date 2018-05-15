@@ -16,6 +16,15 @@ Exchange:
 - [ ] Poloniex
 
 <!--- AFTER you submit you can then tick these boxes --> 
+Market:
+- [ ] BTC
+- [ ] ETH
+- [ ] USDT
+- [ ] BNB
+- [ ] XMR
+
+
+<!--- AFTER you submit you can then tick these boxes --> 
 Operating System:
 - [ ] Windows (please specify version)
 - [ ] Ubuntu (please specify version)
