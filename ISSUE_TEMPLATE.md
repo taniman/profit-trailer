@@ -9,13 +9,13 @@ NO NEW FEATURES! Use [PT Enahancements](https://github.com/taniman/profit-traile
 ## ProfitTrailer info
 Version:
 
-<!--- AFTER you submit you can then tick these boxes --> 
+<!--- replace the space in the [ ] with an x in order to tick it --> 
 Exchange:
 - [ ] Bittrex
 - [ ] Binance
 - [ ] Poloniex
 
-<!--- AFTER you submit you can then tick these boxes --> 
+<!--- replace the space in the [ ] with an x in order to tick it --> 
 Market:
 - [ ] BTC
 - [ ] ETH
@@ -24,7 +24,7 @@ Market:
 - [ ] XMR
 
 
-<!--- AFTER you submit you can then tick these boxes --> 
+<!--- replace the space in the [ ] with an x in order to tick it --> 
 Operating System:
 - [ ] Windows (please specify version)
 - [ ] Ubuntu (please specify version)
