@@ -56,9 +56,9 @@ Operating System:
 <!--- You can upload to https://pastebin.com/ or similar -->
 
 ## Log files/console output
-<!--- Please provide your log file from ProfitTrailer/log or a complete screenshot -->
-<!--- If possible rename/delete your current log and restart the -->
-<!--- bot so we only get recent/relevant log information --> 
-
+<!--- MANDATORY -->
+<!--- Please provide your complete log file from ProfitTrailer/log -->
+<!--- If your issue is a recurring error messags you can rename/delete your current... -->
+<!--- log and restart the bot to reproduce the error so we only get recent/relevant log information --> 
 
 
