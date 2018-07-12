@@ -12,7 +12,7 @@ https://discord.gg/K9a37Vh
 |-------------------|-----------------------------------------------|
 |German             | https://t.me/joinchat/FDBA_g1yD6Iw-k46ysvYzA  |
 |Portuguese         | https://t.me/profittrailer_br                 |
-|Russian            | https://t.me/joinchat/DreUUw-n-aGoi2LunoJTFA  |
+|Russian            | https://t.me/ProfitTrailer_ru                 |
 |Korean             | https://t.me/joinchat/DqRTeBHA8KY5_vwKBj3JzA  |
 |Spanish            | https://t.me/joinchat/FmiiRhEiz1VMEfaf1ch4Hg  |
 |Dutch              | https://t.me/profittrailernl                  |
