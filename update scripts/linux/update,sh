@@ -130,8 +130,10 @@ if [[ "$skipsetup" == "n" ]] || [[ "$skipsetup" == "N" ]]; then
 		echo "$(tput setaf 6)The configuration entered is: $(tput sgr0)"
 		paste <(printf "%-8s\n" "${name[@]}") <(printf "%-8s\n" "${path[@]}")
 		echo
-		read -p "Is this correct? (Y/N) " proceed
-        echo
+		while [[ ! "$proceed" == "y" ]] && [[ ! "$proceed" == "Y" ]] && [[ ! "$proceed" == "n" ]] && [[ ! "$proceed" == "N" ]]; do
+			read -p "Is this correct? (Y/N) " proceed
+			echo
+		done
 		
 		if [[ "$proceed" == "Y" ]] || [[ "$proceed" == "y" ]]; then
 			### optional step to save the setup for next time ###
@@ -142,15 +144,25 @@ if [[ "$skipsetup" == "n" ]] || [[ "$skipsetup" == "N" ]]; then
 				### print each array to a file, one element per row ###
 				printf "%s\n" "${name[@]}" > updatescript/name.txt
 				printf "%s\n" "${path[@]}" > updatescript/path.txt
+				echo $(tput setaf 2)
+				echo Configuration Saved
+				echo $(tput sgr0)
+			else
+				echo $(tput setaf 2)
+				echo Configuration Not Saved
+				echo $(tput sgr0)
 			fi
 		else
-			echo "$(tput setaf 3)Starting setup again... $(tput sgr0)"
+			echo $(tput setaf 3)
+			echo Starting setup again... 
+			echo $(tput sgr0)
 		fi
 	done
 
 elif [[ ! "$skipsetup" == "y" ]] && [[ ! "$skipsetup" == "Y" ]]; then
-	echo "$(tput setaf 1)Process Aborted... $(tput sgr0)"
-    echo
+	echo $(tput setaf 1)
+	echo Process Aborted.... 
+	echo $(tput sgr0)
 	exit
 fi
 
@@ -164,7 +176,9 @@ if [[ ! $1 ]]; then
 	echo "##################################################"
     echo $(tput sgr0)
     echo "Latest release is version $(tput setaf 6) $version $(tput sgr0)"
+	while [[ ! "$continue" == "y" ]] && [[ ! "$continue" == "Y" ]] && [[ ! "$continue" == "n" ]] && [[ ! "$continue" == "N" ]]; do
 	read -p "Do you want to continue? (Y/N) " continue
+	done
     if [[ "$continue" == "y" ]] || [[ "$continue" == "Y" ]]; then
        
         ### Download & extract latest version of PT ###
@@ -207,7 +221,9 @@ if [[ ! $1 ]]; then
 		pm2 status
 		echo       
 	else
-		echo "$(tput setaf 1)Process Aborted.... $(tput sgr0)"
+		echo $(tput setaf 1)
+		echo Process Aborted.... 
+		echo $(tput sgr0)
 		exit
     fi
 fi
@@ -265,7 +281,9 @@ if [ -n "${1}" ]; then
 		pm2 status
         echo
 	else
-		echo "$(tput setaf 1)Process Aborted.... $(tput sgr0)"
+		echo $(tput setaf 1)
+		echo Process Aborted.... 
+		echo $(tput sgr0)
 		exit	
 	fi
 fi
