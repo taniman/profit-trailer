@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ### Linux .jar Update Script for ProfitTrailer
-### LAST UPDATED 16 JULY 2018
+### LAST UPDATED 23 JULY 2018
 
 ### Place this script in the root folder where all your individual bot folders are and then execute it.
 ### For simplicity each ProfitTrailer.jar file should be nested exactly one subfolder.
@@ -93,8 +93,10 @@ if [[ "$skipsetup" == "n" ]] || [[ "$skipsetup" == "N" ]]; then
 	echo $(tput sgr0)
 	echo
     
+	
 	while [[ "$proceed" == "N" ]] || [[ "$proceed" == "n" ]]; do
 		### wipe arrays clean then set the header for each array ###
+		re="\/.*"
 		name=()
 		path=()
 		name[0]=Name/ID
@@ -108,8 +110,14 @@ if [[ "$skipsetup" == "n" ]] || [[ "$skipsetup" == "N" ]]; then
 		### ask user for the name and path of each instance they wish to update ###
 		for ((i=1; i<=$PTinstances; i++)); do
 			read -p "What is the PM2 App name/ id or pid for instance $i? " name[$i]
-			read -p "What is the Directory for ProfitTrailer instance $i? " path[$i]
-			
+			chars="a-zA-Z0-9_-\/"
+			re="\/[$chars]+"
+			execpath=$(pm2 info "${name[$i]}" | grep 'exec cwd');
+			if [[ $execpath =~ $re ]];
+			then
+				path[$i]=$BASH_REMATCH
+			fi
+
 			### If the directory provided doesnt exist or nothing is entered, ask again ###
 			while [[ ! -f "${path[$i]}"/ProfitTrailer.jar ]]; do
 				if [[ ! -d "${path[$i]}" ]] || [[ -z "${path[$i]}" ]]; then
