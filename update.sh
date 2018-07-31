@@ -228,7 +228,7 @@ if [[ ! $1 ]]; then
 			echo "$(tput setaf 2) === Replacing jar file === $(tput sgr0)"
 			cp ProfitTrailer.jar "${path[$i]}"
 			mkdir -p updatescript/"$(date +%m%d_%H%M)"/"${name[$i]}"
-			cp "${path[$i]}"/ProfitTrailerData.json updatescript/"$(date +%m%d_%H%M)"/"${name[$i]}"/ProfitTrailerData.json
+			cp "${path[$i]}"/data/ProfitTrailerData.json updatescript/"$(date +%m%d_%H%M)"/"${name[$i]}"/ProfitTrailerData.json
 			echo
 			echo "$(tput setaf 2) === Restarting ${name[$i]} === $(tput sgr0)"
 			pm2 reload "${name[$i]}"
@@ -287,7 +287,7 @@ if [ -n "${1}" ]; then
 			echo "$(tput setaf 2) === Replacing jar file === $(tput sgr0)"
 			cp ProfitTrailer*.jar "${path[$i]}"/ProfitTrailer.jar
 			mkdir -p updatescript/"$(date +%m%d_%H%M)"/"${name[$i]}"
-			cp "${path[$i]}"/ProfitTrailerData.json updatescript/"$(date +%m%d_%H%M)"/"${name[$i]}"/ProfitTrailerData.json
+			cp "${path[$i]}"/data/ProfitTrailerData.json updatescript/"$(date +%m%d_%H%M)"/"${name[$i]}"/ProfitTrailerData.json
 			echo
 			echo "$(tput setaf 2) === Restarting ${name[$i]} === $(tput sgr0)"
 			pm2 reload "${name[$i]}"
