@@ -96,7 +96,6 @@ if [[ "$skipsetup" == "n" ]] || [[ "$skipsetup" == "N" ]]; then
 	
 	while [[ "$proceed" == "N" ]] || [[ "$proceed" == "n" ]]; do
 		### wipe arrays clean then set the header for each array ###
-		re="\/.*"
 		name=()
 		path=()
 		name[0]=Name/ID
