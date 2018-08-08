@@ -32,6 +32,16 @@ if ! [ -x "$(command -v unzip)" ]; then
 	### install unzip if the user wants to proceed ###
 	if [[ "$install" == "y" ]] || [[ "$install" == "Y" ]]; then
 		sudo apt install unzip
+		
+		if ! [ -x "$(command -v unzip)" ]; then
+			echo "$(tput setaf 1)Something went wrong.... $(tput sgr0)"
+			echo
+			exit
+		else
+			echo $(tput setaf 2)
+			echo "Unzip Installed"
+			echo $(tput sgr0)
+		fi
 	else
 		echo "$(tput setaf 1)Process Aborted.... $(tput sgr0)"
 		echo
@@ -41,11 +51,21 @@ fi
 
 ### Check if curl is installed ###
 if ! [ -x "$(command -v curl)" ]; then
-	read -p "curl is not installed, Do you wish to install it (Y/N)? : " install
+	read -p "Curl is not installed, Do you wish to install it (Y/N)? : " install
 	
 	### install curl if the user wants to proceed ###
 	if [[ "$install" == "y" ]] || [[ "$install" == "Y" ]]; then
 		sudo apt install curl
+		
+		if ! [ -x "$(command -v curl)" ]; then
+			echo "$(tput setaf 1)Something went wrong.... $(tput sgr0)"
+			echo
+			exit
+		else
+			echo $(tput setaf 2)
+			echo "Curl Installed"
+			echo $(tput sgr0)
+		fi
 	else
 		echo "$(tput setaf 1)Process Aborted.... $(tput sgr0)"
 		echo
