@@ -39,6 +39,20 @@ if ! [ -x "$(command -v unzip)" ]; then
 	fi
 fi
 
+### Check if curl is installed ###
+if ! [ -x "$(command -v curl)" ]; then
+	read -p "curl is not installed, Do you wish to install it (Y/N)? : " install
+	
+	### install unzip if the user wants to proceed ###
+	if [[ "$install" == "y" ]] || [[ "$install" == "Y" ]]; then
+		sudo apt install curl
+	else
+		echo "$(tput setaf 1)Process Aborted.... $(tput sgr0)"
+		echo
+		exit
+	fi
+fi
+
 ### If no previous config can be found enter setup automatically ###
 if [ ! -f updatescript/name.txt ]; then
 	skipsetup=N
