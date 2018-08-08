@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ### Linux .jar Update Script for ProfitTrailer
-### LAST UPDATED 23 JULY 2018
+### LAST UPDATED 09 August 2018
 
 ### Place this script in the root folder where all your individual bot folders are and then execute it.
 ### For simplicity each ProfitTrailer.jar file should be nested exactly one subfolder.
@@ -43,7 +43,7 @@ fi
 if ! [ -x "$(command -v curl)" ]; then
 	read -p "curl is not installed, Do you wish to install it (Y/N)? : " install
 	
-	### install unzip if the user wants to proceed ###
+	### install curl if the user wants to proceed ###
 	if [[ "$install" == "y" ]] || [[ "$install" == "Y" ]]; then
 		sudo apt install curl
 	else
