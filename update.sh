@@ -143,7 +143,7 @@ if [[ "$skipsetup" == "n" ]] || [[ "$skipsetup" == "N" ]]; then
 		### ask user for the name and path of each instance they wish to update ###
 		for ((i=1; i<=$PTinstances; i++)); do
 			read -p "What is the PM2 App name/ id or pid for instance $i? " name[$i]
-			chars="a-zA-Z0-9_-\/"
+			chars="a-zA-Z0-9_\/-"
 			re="\/[$chars]+"
 			execpath=$(pm2 info "${name[$i]}" | grep 'exec cwd');
 			if [[ $execpath =~ $re ]];
