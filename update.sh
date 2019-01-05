@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ### Linux .jar Update Script for ProfitTrailer
-### LAST UPDATED 09 August 2018
+### LAST UPDATED 04 January 2019
 
 ### Place this script in the root folder where all your individual bot folders are and then execute it.
 ### For simplicity each ProfitTrailer.jar file should be nested exactly one subfolder.
@@ -262,7 +262,7 @@ if [[ ! $1 ]]; then
 			echo "$(tput setaf 2) === Replacing jar file === $(tput sgr0)"
 			cp ProfitTrailer.jar "${path[$i]}"
 			mkdir -p updatescript/"$(date +%m%d_%H%M)"/"${name[$i]}"
-			cp "${path[$i]}"/data/ProfitTrailerData.json updatescript/"$(date +%m%d_%H%M)"/"${name[$i]}"/ProfitTrailerData.json
+			cp "${path[$i]}"/data/ptdb.mv.db updatescript/"$(date +%m%d_%H%M)"/"${name[$i]}"/ptdb.mv.db
 			echo
 			echo "$(tput setaf 2) === Restarting ${name[$i]} === $(tput sgr0)"
 			pm2 reload "${name[$i]}"
@@ -321,7 +321,7 @@ if [ -n "${1}" ]; then
 			echo "$(tput setaf 2) === Replacing jar file === $(tput sgr0)"
 			cp ProfitTrailer*.jar "${path[$i]}"/ProfitTrailer.jar
 			mkdir -p updatescript/"$(date +%m%d_%H%M)"/"${name[$i]}"
-			cp "${path[$i]}"/data/ProfitTrailerData.json updatescript/"$(date +%m%d_%H%M)"/"${name[$i]}"/ProfitTrailerData.json
+			cp "${path[$i]}"/data/ptdb.mv.db updatescript/"$(date +%m%d_%H%M)"/"${name[$i]}"/ptdb.mv.db
 			echo
 			echo "$(tput setaf 2) === Restarting ${name[$i]} === $(tput sgr0)"
 			pm2 reload "${name[$i]}"
