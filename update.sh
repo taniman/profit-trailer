@@ -397,5 +397,9 @@ if [ -n "${1}" ]; then
 fi
 
 ### Remove all but the 5 most recent backups ###
-ls -dt "$DIR"/updatescript/*/ | tail -n +6 | xargs rm -r
+if [ "$(ls -ld $DIR/updatescript/* | wc -l)" -gt 5 ]
+then
+	ls -dt "$DIR"/updatescript/*/ | tail -n +6 | xargs rm -r
+	echo "Removed old backups from updatescript folder."
+fi
 
