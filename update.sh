@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ### Linux .jar Update Script for ProfitTrailer
-### LAST UPDATED 04 January 2019
+### LAST UPDATED 10 Feb 2019
 
 ### Place this script in the root folder where all your individual bot folders are and then execute it.
 ### For simplicity each ProfitTrailer.jar file should be nested exactly one subfolder.
@@ -16,6 +16,10 @@
 ### execute using ./update.sh to downlaod the latest github release
 ### execute using ./update.sh https://cdn.discordapp.com/exampleurlonly/ProfitTrailer-2.0.4-B1.jar.zip to download a beta version from a link
 ### the link must contain the "ProfitTrailer-2.0.4-B1.jar.zip" portion to work though the ".jar" and "-B#" can be missing.
+
+###Get the Directory and filename of the script###
+DIR="$(dirname $(readlink -f $0))"
+script="$(basename $0)"
 
 ### Clear screen and print header
 clear
@@ -73,8 +77,11 @@ if ! [ -x "$(command -v curl)" ]; then
 	fi
 fi
 
+### Set loc variable to No, If user ends up running this script from within a Bot folder we wont delete their jar file ###
+loc=N
+
 ### If no previous config can be found enter setup automatically ###
-if [ ! -f updatescript/name.txt ]; then
+if [ ! -f "$DIR"/updatescript/name.txt ]; then
 	skipsetup=N
 	echo "$(tput setaf 2)No Previous Setup Found - Entering Setup $(tput sgr0)"
 	echo
@@ -82,7 +89,7 @@ else
 	echo Loading from saved setup...
 	echo
 	### load arrary of app names/ID/pid saved previously ###
-	mapfile -t name < updatescript/name.txt
+	mapfile -t name < "$DIR"/updatescript/name.txt
 	for i in $(seq ${#name[*]}); do
 		[[ ${name[$i-1]} = $name ]]
 	done
@@ -91,7 +98,7 @@ else
 	PTinstances="$((${#name[@]}-1))"
 	
 	### load arrary of paths saved previously ###
-	mapfile -t path < updatescript/path.txt
+	mapfile -t path < "$DIR"/updatescript/path.txt
 	for ((i=1; i<=PTinstances; i++)); do
 		[[ ${path[$i-1]} = $path ]]
 		### check that the directories actually exist and an empty string is not provided ###
@@ -120,6 +127,7 @@ if [[ "$skipsetup" == "n" ]] || [[ "$skipsetup" == "N" ]]; then
 	### Set proceed variable to No, causing loop unitil user confirms proceed later ###
 	proceed=N
 
+
 	echo $(tput setaf 3)
 	echo "##################################################"
 	echo "                      Setup"
@@ -142,24 +150,37 @@ if [[ "$skipsetup" == "n" ]] || [[ "$skipsetup" == "N" ]]; then
 		echo
 		### ask user for the name and path of each instance they wish to update ###
 		for ((i=1; i<=$PTinstances; i++)); do
-			read -p "What is the PM2 App name/ id or pid for instance $i? " name[$i]
-			chars="a-zA-Z0-9_\/-"
-			re="\/[$chars]+"
-			execpath=$(pm2 info "${name[$i]}" | grep 'exec cwd');
-			if [[ $execpath =~ $re ]];
-			then
-				path[$i]=$BASH_REMATCH
-			fi
-
-			### If the directory provided doesnt exist or nothing is entered, ask again ###
+			### use the lack of profittrailer.jar to loop through setup.
 			while [[ ! -f "${path[$i]}"/ProfitTrailer.jar ]]; do
+				read -p "What is the PM2 App name/ id for instance $i? " newname
+				chars="a-zA-Z0-9_\/-"
+				re="\/[$chars]+"
+				execpath=$(pm2 info "$newname" | grep 'exec cwd');
+				if [[ $execpath =~ $re ]]; then
+					path[$i]=$BASH_REMATCH
+				fi
+				
+				### if user entered only a number (pm2 ID) store the app name instead.	###
+				### dunno why but if you alter the below echo and then structure it literally breaks the if statement ###
+				if [[ $newname =~ "^[0-9]+$" ]]
+				echo
+				then
+					### use grep, sed and cut to find the field the pm2 process name is in. Future PM2 updates might break this and need changing ###
+					rename=$(pm2 info "$newname" | grep 'name' | sed -n '1p' | cut -d ' ' -f 9-)
+					### remove any leading or trailing spaces or tabs ###
+					nowhitespace=$(echo "$rename" | xargs)
+					name[$i]=$nowhitespace
+				fi
+
+				### If the directory provided doesnt exist or nothing is entered, ask again ###
 				if [[ ! -d "${path[$i]}" ]] || [[ -z "${path[$i]}" ]]; then
 					echo "$(tput setaf 1)Path for instance $i does not exist. Try again... $(tput sgr0)"
-					read -p "What is the Directory for ProfitTrailer instance #$i? " path[$i]	
-				else 
-					### If the directory does not contain the ProfitTrailer.jar file, ask again ###
-					echo "$(tput setaf 1)Path for instance $i does not contain ProfitTrailer.jar. Try Again... $(tput sgr0)"
-					read -p "What is the Directory for ProfitTrailer instance #$i? " path[$i]
+				### If the directory does not contain the ProfitTrailer.jar file, confirm intentions ###
+				elif [[ ! -f "${path[$i]}"/ProfitTrailer.jar ]]; then
+					read -p "$(tput setaf 1)Path for instance $i (${path[$i]}) does not contain ProfitTrailer.jar. Do you wish to use it anyway? (Y/N) $(tput sgr0)" empty
+					if [[ "$empty" == "y" ]] || [[ "$empty" == "Y" ]] || [[ "$empty" == "yes" ]] || [[ "$empty" == "Yes" ]]; then
+						break	
+					fi
 				fi
 			done
 		done
@@ -193,11 +214,11 @@ if [[ "$skipsetup" == "n" ]] || [[ "$skipsetup" == "N" ]]; then
 			done
 			
 			if [[ "$savetofile" == "Y" ]] || [[ "$savetofile" == "y" ]]; then
-				### create the folder for the config is necessary ###
-				mkdir -p updatescript
+				### create the folder for the config if necessary ###
+				mkdir -p "$DIR"/updatescript
 				### print each array to a file, one element per row ###
-				printf "%s\n" "${name[@]}" > updatescript/name.txt
-				printf "%s\n" "${path[@]}" > updatescript/path.txt
+				printf "%s\n" "${name[@]}" > "$DIR"/updatescript/name.txt
+				printf "%s\n" "${path[@]}" > "$DIR"/updatescript/path.txt
 				echo $(tput setaf 2)
 				echo Configuration Saved
 				echo $(tput sgr0)
@@ -251,27 +272,41 @@ if [[ ! $1 ]]; then
         echo
 		echo "$(tput setaf 2) === Extracting download === $(tput sgr0)"
 		### unzip the jar file only from the zip. -q for quiet, -j to prevent extracting directories ###
-		unzip -q -j ProfitTrailer-$version.zip '*jar'
+		unzip -q -j ProfitTrailer-$version.zip '*jar' '*sh'
+		mv linux-update.sh "$DIR"/"$script"
+		
 
 		### Stop each BOT and Copy ProfitTrailer.jar to each instance, then restart it ###
 		for ((i=1; i<=PTinstances; i++)); do
+			
+			### If the user is running this script inside their bots folder we avoid deleting the jar during cleanup ###
+			if [[ "$DIR" == "${path[$i]}" ]]; then
+				loc=Y
+			fi
+		
 			echo
 			echo "$(tput setaf 2) === Stopping ${name[$i]} === $(tput sgr0)"
 			pm2 stop "${name[$i]}"
 			echo
 			echo "$(tput setaf 2) === Replacing jar file === $(tput sgr0)"
 			cp ProfitTrailer.jar "${path[$i]}"
-			mkdir -p updatescript/"$(date +%m%d_%H%M)"/"${name[$i]}"
-			cp "${path[$i]}"/data/ptdb.mv.db updatescript/"$(date +%m%d_%H%M)"/"${name[$i]}"/ptdb.mv.db
+			mkdir -p "$DIR"/updatescript/"$(date +%m%d_%H%M)"/"${name[$i]}"
+			cp "${path[$i]}"/data/ptdb.mv.db "$DIR"/updatescript/"$(date +%m%d_%H%M)"/"${name[$i]}"/ptdb.mv.db
 			echo
 			echo "$(tput setaf 2) === Restarting ${name[$i]} === $(tput sgr0)"
 			pm2 reload "${name[$i]}"
 		done
-
+			
 		### Remove downloaded Files ###
 		echo
 		echo "$(tput setaf 2) === Cleaning up === $(tput sgr0)"
-		rm -rf ProfitTrailer-$version.zip ProfitTrailer.jar
+		
+		if [[ "$loc" == "Y" ]]; then
+			rm -rf ProfitTrailer-$version*.zip
+		else
+			rm -rf ProfitTrailer-$version*.zip ProfitTrailer.jar
+		fi
+
 		echo $(tput setaf 3)
 		echo "##################################################"
 		echo "     Finished updating to ProfitTrailer $version"
@@ -310,18 +345,25 @@ if [ -n "${1}" ]; then
 		echo
 		echo "$(tput setaf 2) === Extracting download === $(tput sgr0)"
 		### unzip the jar file only from the zip. -q for quiet, -j to prevent extracting directories ###
-		unzip -q -j ProfitTrailer-$version*.zip '*jar'
+		unzip -q -j ProfitTrailer-$version.zip '*jar' '*sh'
+		mv linux-update.sh "$DIR"/"$script"
 
 		### Copy ProfitTrailer.jar to each instance ###
 		for ((i=1; i<=PTinstances; i++)); do
+		
+			### If the user is running this script inside their bots folder we avoid deleting the jar during cleanup ###
+			if [[ "$DIR" == "${path[$i]}" ]]; then
+				loc=Y
+			fi
+		
 			echo
 			echo "$(tput setaf 2) === Stopping ${name[$i]} === $(tput sgr0)"
 			pm2 stop "${name[$i]}"
 			echo
 			echo "$(tput setaf 2) === Replacing jar file === $(tput sgr0)"
 			cp ProfitTrailer*.jar "${path[$i]}"/ProfitTrailer.jar
-			mkdir -p updatescript/"$(date +%m%d_%H%M)"/"${name[$i]}"
-			cp "${path[$i]}"/data/ptdb.mv.db updatescript/"$(date +%m%d_%H%M)"/"${name[$i]}"/ptdb.mv.db
+			mkdir -p "$DIR"/updatescript/"$(date +%m%d_%H%M)"/"${name[$i]}"
+			cp "${path[$i]}"/data/ptdb.mv.db "$DIR"/updatescript/"$(date +%m%d_%H%M)"/"${name[$i]}"/ptdb.mv.db
 			echo
 			echo "$(tput setaf 2) === Restarting ${name[$i]} === $(tput sgr0)"
 			pm2 reload "${name[$i]}"
@@ -330,7 +372,13 @@ if [ -n "${1}" ]; then
 
 		### Remove downloaded Files ###
 		echo "$(tput setaf 2) === Cleaning up === $(tput sgr0)"
-		rm -rf ProfitTrailer-$version*.zip ProfitTrailer*.jar
+		
+		if [[ "$loc" == "Y" ]]; then
+			rm -rf ProfitTrailer-$version*.zip
+		else
+			rm -rf ProfitTrailer-$version*.zip ProfitTrailer*.jar
+		fi
+		
 		echo $(tput setaf 3)
 		echo "##################################################"
 		echo "   Finished updating to ProfitTrailer $version"
@@ -347,3 +395,7 @@ if [ -n "${1}" ]; then
 		exit	
 	fi
 fi
+
+### Remove all but the 5 most recent backups ###
+ls -dt "$DIR"/updatescript/*/ | tail -n +6 | xargs rm -r
+
