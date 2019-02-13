@@ -281,9 +281,9 @@ if [[ $continue == "y" ]] || [[ $continue == "Y" ]]; then
 	echo
 	echo "$(tput setaf 2) === Extracting download === $(tput sgr0)"
 	### unzip the jar file only from the zip. -q for quiet, -j to prevent extracting directories ###
-	unzip -q -j ProfitTrailer-$version.zip '*jar' '*sh'
+	unzip -q -j -o ProfitTrailer-$version.zip '*jar' '*sh'
 	### Update linux-update script ###
-	mv linux-update.sh "$DIR"/"$script"
+	mv -f linux-update.sh "$DIR"/"$script" 2>/dev/null
 	chmod +x "$DIR"/"$script"
 	
 	### Set loc variable to No, If user ends up running this script from within a Bot folder we wont delete their jar file ###
