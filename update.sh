@@ -304,7 +304,7 @@ if [[ $continue == "y" ]] || [[ $continue == "Y" ]]; then
 		echo "$(tput setaf 2) === Replacing jar file === $(tput sgr0)"
 		cp ProfitTrailer.jar "${path[$i]}"
 		mkdir -p "$DIR"/updatescript/"$(date +%m%d_%H%M)"/"${name[$i]}"
-		cp "${path[$i]}"/data/ptdb.mv.db "$DIR"/updatescript/"$(date +%m%d_%H%M)"/"${name[$i]}"/ptdb.mv.db
+		cp "${path[$i]}"/data/ptdb.db "$DIR"/updatescript/"$(date +%m%d_%H%M)"/"${name[$i]}"/ptdb.db
 		echo
 		echo "$(tput setaf 2) === Restarting ${name[$i]} === $(tput sgr0)"
 		pm2 reload "${name[$i]}"
