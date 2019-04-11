@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ### Linux .jar Update Script for ProfitTrailer
-### LAST UPDATED 20 Mar 2019
+### LAST UPDATED 11 Apr 2019
 
 ### Place this script in the root folder where all your individual bot folders are and then execute it.
 ### For simplicity each ProfitTrailer.jar file should be nested exactly one subfolder.
@@ -15,6 +15,9 @@
 ### execute using ./linux-update.sh to downlaod the latest github release
 ### execute using ./linux-update.sh https://cdn.discordapp.com/exampleurlonly/ProfitTrailer-2.0.4-B1.jar.zip to download a beta version from a link
 ### the link must contain the "ProfitTrailer-2.0.4-B1.jar.zip" portion to work though the ".jar" and "-B#" can be missing.
+
+### Set all child processes to this locale language to prevent rev from breaking
+export LC_ALL='en_US.UTF-8'
 
 ###Get the Directory and filename of the script###
 DIR=$(dirname "$(readlink -f "$0")")
