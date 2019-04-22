@@ -250,10 +250,13 @@ fi
 version=$(echo $1 | rev | cut -d'/' -f 1 | rev | sed 's/\(.*\).zip/\1/' | sed 's/\(.*\).jar/\1/' | rev | sed 's/\(.*\)-reliarTtiforP/\1/' | rev)
 download=$1
 
+### Get latest Version number
+latest=$(curl -s https://api.github.com/repos/taniman/profit-trailer/releases | grep tag_name | cut -d '"' -f 4 | sed -n '1p')
+
 ### If no variable is passed search on github ###
 if [[ ! $1 ]]; then
 ### Find Latest Version of PT and its download url ###
-version=$(curl -s https://api.github.com/repos/taniman/profit-trailer/releases | grep tag_name | cut -d '"' -f 4 | sed -n '1p')
+version=$latest
 download=$(curl -s https://api.github.com/repos/taniman/profit-trailer/releases | grep browser_download_url | cut -d '"' -f 4 | sed -n '1p')
 fi
 
@@ -262,7 +265,9 @@ echo "##################################################"
 echo "                      Update"
 echo "##################################################"
 echo $(tput sgr0)
-echo "Latest release is version $(tput setaf 6) $version $(tput sgr0)"
+echo "Latest release is version $(tput setaf 6) $latest $(tput sgr0)"
+if [[$version != $latest]]
+	echo "Updating to version $(tput setaf 6) $version $(tput sgr0)"
 echo
 read -p "Do you want to continue? (Y/N) " continue
 echo
