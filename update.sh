@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ### Linux .jar Update Script for ProfitTrailer
-### LAST UPDATED 11 Apr 2019
+### LAST UPDATED 23 Apr 2019
 
 ### Place this script in the root folder where all your individual bot folders are and then execute it.
 ### For simplicity each ProfitTrailer.jar file should be nested exactly one subfolder.
@@ -266,8 +266,9 @@ echo "                      Update"
 echo "##################################################"
 echo $(tput sgr0)
 echo "Latest release is version $(tput setaf 6) $latest $(tput sgr0)"
-if [[$version != $latest]]
+if [[ ! $version == $latest ]]; then
 	echo "Updating to version $(tput setaf 6) $version $(tput sgr0)"
+fi
 echo
 read -p "Do you want to continue? (Y/N) " continue
 echo
