@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ### Linux .jar Update Script for ProfitTrailer
-### LAST UPDATED 23 Apr 2019
+### LAST UPDATED 24 Apr 2019
 
 ### Place this script in the root folder where all your individual bot folders are and then execute it.
 ### For simplicity each ProfitTrailer.jar file should be nested exactly one subfolder.
@@ -13,8 +13,6 @@
 ###         linux-update.sh
 ### cd to the directory you have it in e.g cd /var/opt
 ### execute using ./linux-update.sh to downlaod the latest github release
-### execute using ./linux-update.sh https://cdn.discordapp.com/exampleurlonly/ProfitTrailer-2.0.4-B1.jar.zip to download a beta version from a link
-### the link must contain the "ProfitTrailer-2.0.4-B1.jar.zip" portion to work though the ".jar" and "-B#" can be missing.
 
 ### Set all child processes to this locale language to prevent rev from breaking
 export LC_ALL='en_US.UTF-8'
@@ -23,7 +21,23 @@ export LC_ALL='en_US.UTF-8'
 DIR=$(dirname "$(readlink -f "$0")")
 script=$(basename "$0")
 
-### Clear screen and print header
+### Update linux-update script ###
+### -s silent -O output to a file ###
+curl -s https://raw.githubusercontent.com/taniman/profit-trailer/master/update.sh -O
+### Get line containing LAST UPDATED (line 4 typically) ###
+### -i ignore case, -m 1 match only first instance ###
+olddate=$(grep -i -m 1 'updated' "$DIR"/"$script")
+newdate=$(grep -i -m 1 'updated' update.sh)
+if [[ ! $olddate == $newdate ]]; then
+	mv -f update.sh "$DIR"/"$script" 2>/dev/null
+	chmod +x "$DIR"/"$script"
+	if [[ ! $1 ]]; then
+		exec "$DIR"/"$script"
+	else
+		exec "$DIR"/"$script" "$@"
+fi
+
+### Clear screen and print header ###
 clear
 echo $(tput setaf 3)
 echo "##################################################"
@@ -35,49 +49,33 @@ echo $(tput sgr0)
 
 ### Check if unzip is installed ###
 if ! [ -x "$(command -v unzip)" ]; then
-	read -p "Unzip is not installed, Do you wish to install it (Y/N)? : " install
+	echo "Unzip is not installed, Installing now..."
+	sudo apt install unzip
 	
-	### install unzip if the user wants to proceed ###
-	if [[ $install == "y" ]] || [[ $install == "Y" ]]; then
-		sudo apt install unzip
-		
-		if ! [ -x "$(command -v unzip)" ]; then
-			echo "$(tput setaf 1)Something went wrong.... $(tput sgr0)"
-			echo
-			exit
-		else
-			echo $(tput setaf 2)
-			echo "Unzip Installed"
-			echo $(tput sgr0)
-		fi
-	else
-		echo "$(tput setaf 1)Process Aborted.... $(tput sgr0)"
+	if ! [ -x "$(command -v unzip)" ]; then
 		echo
+		echo "$(tput setaf 1)Something went wrong.... $(tput sgr0)"
 		exit
+	else
+		echo $(tput setaf 2)
+		echo "Unzip Installed"
+		echo $(tput sgr0)
 	fi
 fi
 
 ### Check if curl is installed ###
 if ! [ -x "$(command -v curl)" ]; then
-	read -p "Curl is not installed, Do you wish to install it (Y/N)? : " install
+	echo "Curl is not installed, Installing now..."
+	sudo apt install curl
 	
-	### install curl if the user wants to proceed ###
-	if [[ $install == "y" ]] || [[ $install == "Y" ]]; then
-		sudo apt install curl
-		
-		if ! [ -x "$(command -v curl)" ]; then
-			echo "$(tput setaf 1)Something went wrong.... $(tput sgr0)"
-			echo
-			exit
-		else
-			echo $(tput setaf 2)
-			echo "Curl Installed"
-			echo $(tput sgr0)
-		fi
-	else
-		echo "$(tput setaf 1)Process Aborted.... $(tput sgr0)"
+	if ! [ -x "$(command -v curl)" ]; then
 		echo
+		echo "$(tput setaf 1)Something went wrong.... $(tput sgr0)"
 		exit
+	else
+		echo $(tput setaf 2)
+		echo "Curl Installed"
+		echo $(tput sgr0)
 	fi
 fi
 
@@ -115,11 +113,15 @@ else
 	
 	if [[ ! $skipsetup == "N" ]]; then
 		### print out the arrays as a table for user to check ###
-		### pad the columns by 8 places for legibility        ###
+		### pad the columns by 8 places for legibility %-8s\n ###
 		echo "$(tput setaf 6)Your current configuration is: $(tput sgr0)"
 		paste <(printf "%-8s\n" "${name[@]}") <(printf "%-8s\n" "${path[@]}")
-		echo
-		read -p "Do you wish to proceed with this configuration? (Y/N) " skipsetup
+		if [[ $1 == "auto" ]]; then
+			skipsetup=Y
+		else
+			echo
+			read -p "Do you wish to proceed with this configuration? (Y/N) " skipsetup
+		fi
 	fi
 fi
 
@@ -127,7 +129,7 @@ fi
 
 if [[ $skipsetup == "n" ]] || [[ $skipsetup == "N" ]]; then
 
-	### Set proceed variable to No, causing loop unitil user confirms proceed later ###
+	### Set proceed variable to No, causing loop until user confirms proceed later ###
 	proceed=N
 
 	echo $(tput setaf 3)
@@ -241,59 +243,155 @@ fi
 
 ### DOWNLOAD AND INSTALL ###
 
-
-### passing a Beta URL as a variable will use the url itself to determine version###
-### the only difference is it will strip out the -Bx from the jar file name
-### e.g ./update.sh https://cdn.discordapp.com/attachments/400383734777511936/443897522956533760/ProfitTrailer-2.0.4-B1.jar.zip
-
-### extract the version number from the file name ###
-version=$(echo $1 | rev | cut -d'/' -f 1 | rev | sed 's/\(.*\).zip/\1/' | sed 's/\(.*\).jar/\1/' | rev | sed 's/\(.*\)-reliarTtiforP/\1/' | rev)
-download=$1
-
 ### Get latest Version number
 latest=$(curl -s https://api.github.com/repos/taniman/profit-trailer/releases | grep tag_name | cut -d '"' -f 4 | sed -n '1p')
+current=$(unzip -p "${path[1]}"/ProfitTrailer.jar  META-INF/MANIFEST.MF | grep Implementation-Version | cut -d ' ' -f 2)
+url=$(curl -s https://api.github.com/repos/taniman/profit-trailer/releases | grep browser_download_url | cut -d '"' -f 4 | sed -n '1p')
 
-### If no variable is passed search on github ###
-if [[ ! $1 ]]; then
-### Find Latest Version of PT and its download url ###
-version=$latest
-download=$(curl -s https://api.github.com/repos/taniman/profit-trailer/releases | grep browser_download_url | cut -d '"' -f 4 | sed -n '1p')
-fi
+### Break the current version into SemVer segments ###
+IFS='.' read -a version_parts <<< "$current"
+major=${version_parts[0]}
+minor=${version_parts[1]}
+### Strip Beta Version if required ###
+patch=$(echo ${version_parts[2]} | cut -d '-' -f 1)
+
 
 echo $(tput setaf 3)
 echo "##################################################"
 echo "                      Update"
 echo "##################################################"
 echo $(tput sgr0)
-echo "Latest release is version $(tput setaf 6) $latest $(tput sgr0)"
-if [[ ! $version == $latest ]]; then
-	echo "Updating to version $(tput setaf 6) $version $(tput sgr0)"
-fi
 echo
-read -p "Do you want to continue? (Y/N) " continue
-echo
+echo " The current version is $(tput setaf 6) $current $(tput sgr0)"
+echo " Latest release is version $(tput setaf 6) $latest $(tput sgr0)"
 
-### If something else is entered ask for a new answer ### 
-while [[ ! $continue == "y" ]] && [[ ! $continue == "Y" ]] && [[ ! $continue == "n" ]] && [[ ! $continue == "N" ]]; do
-	echo Please Try Again...
+
+if [[ ! $1 == "auto" ]]; then
+	echo
+	echo "Please select an option below: (1-7)"
+
+
+	### Loop through the selection menu until a valid version and url is found ###
+	while [[ $exists == *"404 Not Found"* ]] || [[ -z $exists ]]; do
+		
+		if [[ $major == "2" ]] && [[ $minor == "2" ]] && [[ ! $patch == "12" ]]; then
+			echo $(tput setaf 3)
+			echo "CAUTION!"
+			echo "You need to update to 2.2.12 and run the bot before updating to $latest"
+			echo $(tput sgr0)
+			echo "Select Choose Specific Version (5) from the options below and enter 2.2.12 when prompted"
+		elif [[ $major == "2" ]] && [[ $minor == "1" ]] && [[ ! $patch == "30" ]] || [[ $major == "2" ]] && [[ $minor == "0" ]]; then
+			echo $(tput setaf 3)
+			echo "CAUTION!"
+			echo "You need to update to 2.1.30 and run the bot before updating to $latest"
+			echo $(tput sgr0)
+			echo "Select Choose Specific Version (5) from the options below and enter 2.1.30 when prompted"
+		fi	
+		
+		### Use options menu to select the version number of the desired download. Also allow Beta Url to be entered ###
+		options=("Latest Release" "Increment Major Version" "Increment Minor Version" "Increment Patch Version" "Choose Specific Version" "Beta Patch" "Exit")
+		select opt in "${options[@]}"
+		do
+			case "$opt" in
+				"Latest Release")
+					version=$latest
+					break
+					;;
+				"Increment Major Version")
+					newmajor=$((major + 1))
+					version="$newmajor.0.0"
+					break
+					;;
+				"Increment Minor Version")
+					newminor=$((minor + 1))
+					version="$major.$newminor.0"
+					break
+					;;
+				"Increment Patch Version")
+					newpatch=$((patch + 1))
+					version="$major.$minor.$newpatch"
+					break
+					;;
+				"Choose Specific Version")
+					### Regex for x.x.x ###
+					rx='^([0-9]+\.){2}(\*|[0-9]+)$'
+					read -p "Please enter the version you wish to update to: " version
+					while [[ ! $version =~ $rx ]]; do
+						echo "Enter the version number in the format (x.x.x)"
+						read -p "Please enter the version you wish to update to: " version
+						echo
+					done
+					break
+					;;
+				"Beta Patch")
+					echo 
+					read -p "Enter the full url to the Beta Zip file: " download
+					echo
+					version=$(echo $download | rev | cut -d'/' -f 1 | rev | sed 's/\(.*\).zip/\1/' | sed 's/\(.*\).jar/\1/' | rev | sed 's/\(.*\)-reliarTtiforP/\1/' | rev)
+					break
+					;;
+				"Exit")
+					echo $(tput setaf 1)
+					echo Process Aborted.... 
+					echo $(tput sgr0)
+					exit
+					;;
+			esac
+		done
+		
+
+		### If the download URL was not set (Beta patch) set it now and adjust it if necessary for the selected version ###	
+		if [ -z "$download" ]; then
+			download=${url//$latest/$version}
+		fi
+
+		### get the http status of the url to determine if it is a real link or not ###
+		exists=$(curl -Is $download | head -1)
+		if [[ $exists == *"404 Not Found"* ]]; then
+			download=
+			echo $(tput setaf 1)
+			echo "Download URL for $version does not exist or is not reachable."
+			echo $(tput sgr0)
+			echo "Please select an option below: (1-7)"
+		fi
+	done
+
+	echo
+	echo " Updating to version $(tput setaf 6) $version $(tput sgr0)"
+	echo
 	read -p "Do you want to continue? (Y/N) " continue
 	echo
-done
+
+	### If something else is entered ask for a new answer ### 
+	while [[ ! $continue == "y" ]] && [[ ! $continue == "Y" ]] && [[ ! $continue == "n" ]] && [[ ! $continue == "N" ]]; do
+		echo Please Try Again...
+		read -p "Do you want to continue? (Y/N) " continue
+		echo
+	done
+### If auto parameter passed skip the menu and update to the latest release ###
+else
+	continue=Y
+	version=$latest
+	echo
+	secs=$((10))
+	while [ $secs -gt 0 ]; do
+	   echo -ne " Updating to version $(tput setaf 6)$version$(tput sgr0) in $secs\033[0K seconds...\r"
+	   sleep 1
+	   : $((secs--))
+	done
+fi	
 
 if [[ $continue == "y" ]] || [[ $continue == "Y" ]]; then
    
 	### Download & extract latest version of PT ###
 	echo
 	echo "$(tput setaf 2) === Downloading ProfitTrailer $version === $(tput sgr0)"
-	### -q for quiet to minimise output but --show-progress to give us a progress bar ###
+	### -q for quiet to minimise output but --progress-bar to give us a progress bar ###
 	curl $download -L -O --progress-bar
 	echo
 	echo "$(tput setaf 2) === Extracting download === $(tput sgr0)"
 	### unzip the jar file only from the zip. -q for quiet, -j to prevent extracting directories ###
-	unzip -q -j -o ProfitTrailer-$version.zip '*jar' '*sh'
-	### Update linux-update script ###
-	mv -f linux-update.sh "$DIR"/"$script" 2>/dev/null
-	chmod +x "$DIR"/"$script"
+	unzip -q -j -o ProfitTrailer-$version.zip '*jar'
 	
 	### Set loc variable to No, If user ends up running this script from within a Bot folder we wont delete their jar file ###
 	loc=N
