@@ -14,37 +14,6 @@
 ### cd to the directory you have it in e.g cd /var/opt
 ### execute using ./linux-update.sh to downlaod the latest github release
 
-### Set all child processes to this locale language to prevent rev from breaking
-export LC_ALL='en_US.UTF-8'
-
-###Get the Directory and filename of the script###
-DIR=$(dirname "$(readlink -f "$0")")
-script=$(basename "$0")
-
-### Update linux-update script ###
-### -s silent -O output to a file ###
-curl -s https://raw.githubusercontent.com/taniman/profit-trailer/master/update.sh -O
-### Get line containing LAST UPDATED (line 4 typically) ###
-### -i ignore case, -m 1 match only first instance ###
-olddate=$(grep -i -m 1 'updated' "$DIR"/"$script")
-newdate=$(grep -i -m 1 'updated' update.sh)
-if [[ ! $olddate == $newdate ]]; then
-	mv -f update.sh "$DIR"/"$script" 2>/dev/null
-	chmod +x "$DIR"/"$script"
-	if [[ ! $1 ]]; then
-		exec "$DIR"/"$script"
-	else
-		exec "$DIR"/"$script" "$@"
-fi
-
-### Clear screen and print header ###
-clear
-echo $(tput setaf 3)
-echo "##################################################"
-echo "          ProfitTrailer Update Script            "
-echo "##################################################"
-echo $(tput sgr0)
-
 ### INSTALL DEPENDENCIES ###
 
 ### Check if unzip is installed ###
@@ -78,6 +47,38 @@ if ! [ -x "$(command -v curl)" ]; then
 		echo $(tput sgr0)
 	fi
 fi
+
+### Set all child processes to this locale language to prevent rev from breaking
+export LC_ALL='en_US.UTF-8'
+
+###Get the Directory and filename of the script###
+DIR=$(dirname "$(readlink -f "$0")")
+script=$(basename "$0")
+
+### Update linux-update script ###
+### -s silent -O output to a file ###
+curl -s https://raw.githubusercontent.com/taniman/profit-trailer/master/update.sh -O > /dev/null
+### Get line containing LAST UPDATED (line 4 typically) ###
+### -i ignore case, -m 1 match only first instance ###
+olddate=$(grep -i -m 1 'updated' "$DIR"/"$script")
+newdate=$(grep -i -m 1 'updated' update.sh)
+if [[ ! $olddate == $newdate ]]; then
+	mv -f update.sh "$DIR"/"$script" 2>/dev/null
+	chmod +x "$DIR"/"$script"
+	if [[ ! $1 ]]; then
+		exec "$DIR"/"$script"
+	else
+		exec "$DIR"/"$script" "$@"
+	fi
+fi
+
+### Clear screen and print header ###
+clear
+echo $(tput setaf 3)
+echo "##################################################"
+echo "          ProfitTrailer Update Script            "
+echo "##################################################"
+echo $(tput sgr0)
 
 ### LOAD PREVIOUS CONFIG ###
 
