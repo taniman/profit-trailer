@@ -18,6 +18,7 @@
 ### This script can be executed with some optional parameters 
 ### auto      - automaticlaly upgrade without any confirmation to the latest version
 ### noupdate  - do not update the script from github
+### betaurl   - Enter the url to a profitTrailer Zip file to update to that beta version without confirmation e.g https://domain.com.ProfitTrailer-2.3.2.zip
 
 ### INSTALL DEPENDENCIES ###
 
@@ -78,7 +79,10 @@ if [[ ! "$@" == *"noupdate"* ]]; then
 		fi
 	fi
 else
+	echo
 	echo "Skipped script update"
+	sleep 2
+	
 fi
 ### Clear screen and print header ###
 clear
@@ -275,7 +279,7 @@ echo " The current version is $(tput setaf 6) $current $(tput sgr0)"
 echo " Latest release is version $(tput setaf 6) $latest $(tput sgr0)"
 
 
-if [[ ! $1 == "auto" ]]; then
+if [[ ! "$@" == *"auto"* || ! "$@" == *"ProfitTrailer"* ]]; then
 	echo
 	echo "Please select an option below: (1-7)"
 
@@ -348,7 +352,6 @@ if [[ ! $1 == "auto" ]]; then
 			esac
 		done
 		
-
 		### If the download URL was not set (Beta patch) set it now and adjust it if necessary for the selected version ###	
 		if [ -z "$download" ]; then
 			download=${url//$latest/$version}
@@ -377,10 +380,15 @@ if [[ ! $1 == "auto" ]]; then
 		read -p "Do you want to continue? (Y/N) " continue
 		echo
 	done
-### If auto parameter passed skip the menu and update to the latest release ###
+### If auto parameter or beta url was used as an argument, skip the menu and update to the latest release ###
 else
 	continue=Y
 	version=$latest
+	for arg in "$@"; do
+		if [[ $arg == *"http"* ]]; then
+			download=$arg
+			version=$(echo $download | rev | cut -d'/' -f 1 | rev | sed 's/\(.*\).zip/\1/' | sed 's/\(.*\).jar/\1/' | rev | sed 's/\(.*\)-reliarTtiforP/\1/' | rev)
+		fi	
 	echo
 	secs=$((10))
 	while [ $secs -gt 0 ]; do
