@@ -129,7 +129,7 @@ else
 		### pad the columns by 8 places for legibility %-8s\n ###
 		echo "$(tput setaf 6)Your current configuration is: $(tput sgr0)"
 		paste <(printf "%-8s\n" "${name[@]}") <(printf "%-8s\n" "${path[@]}")
-		if [[ $1 == "auto" ]]; then
+		if [[ "$@" == *"auto"* || "$@" == *"ProfitTrailer"* ]]; then
 			skipsetup=Y
 		else
 			echo
@@ -279,7 +279,7 @@ echo " The current version is $(tput setaf 6) $current $(tput sgr0)"
 echo " Latest release is version $(tput setaf 6) $latest $(tput sgr0)"
 
 
-if [[ ! "$@" == *"auto"* || ! "$@" == *"ProfitTrailer"* ]]; then
+if ! [[ "$@" == *"auto"* || "$@" == *"/ProfitTrailer-"* ]]; then
 	echo
 	echo "Please select an option below: (1-7)"
 
@@ -389,6 +389,7 @@ else
 			download=$arg
 			version=$(echo $download | rev | cut -d'/' -f 1 | rev | sed 's/\(.*\).zip/\1/' | sed 's/\(.*\).jar/\1/' | rev | sed 's/\(.*\)-reliarTtiforP/\1/' | rev)
 		fi	
+	done
 	echo
 	secs=$((10))
 	while [ $secs -gt 0 ]; do
