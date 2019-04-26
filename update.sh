@@ -14,7 +14,7 @@
 ### cd to the directory you have it in e.g cd /var/opt
 ### execute using ./linux-update.sh to downlaod the latest github release
 
-### OPTIONS ###    ./update.sh option1 option2
+### OPTIONS ###    ./linux-update.sh option1 option2
 ### This script can be executed with some optional parameters 
 ### auto      - automaticlaly upgrade without any confirmation to the latest version
 ### noupdate  - do not update the script from github
@@ -57,14 +57,15 @@ fi
 ### Set all child processes to this locale language to prevent rev from breaking
 export LC_ALL='en_US.UTF-8'
 
-###Get the Directory and filename of the script###
+###Get the directory and filename of the script###
 DIR=$(dirname "$(readlink -f "$0")")
 script=$(basename "$0")
 
+### Update linux-update script unless noupdate option is used###
 if [[ ! "$@" == *"noupdate"* ]]; then
-	### Update linux-update script ###
-	### -s silent -O output to a file ###
+	### download update.sh from github. -s silent -O output to a file ###
 	curl -s https://raw.githubusercontent.com/taniman/profit-trailer/master/update.sh -O > /dev/null
+	### Check if the file is newer ###
 	### Get line containing LAST UPDATED (line 4 typically) ###
 	### -i ignore case, -m 1 match only first instance ###
 	olddate=$(grep -i -m 1 'updated' "$DIR"/"$script")
@@ -77,7 +78,11 @@ if [[ ! "$@" == *"noupdate"* ]]; then
 		else
 			exec "$DIR"/"$script" "$@"
 		fi
+	### Remove the downloaded update.sh if it is not the only copy ###
+	elif [[ ! "$script" == "update.sh" ]]; then
+		rm -rf update.sh
 	fi
+	
 else
 	echo
 	echo "Skipped script update"
