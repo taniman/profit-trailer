@@ -144,7 +144,7 @@ else
 fi
 
 ### SETUP ###
-
+clear
 if [[ $skipsetup == "n" ]] || [[ $skipsetup == "N" ]]; then
 
 	### Set proceed variable to No, causing loop until user confirms proceed later ###
@@ -273,7 +273,7 @@ minor=${version_parts[1]}
 ### Strip Beta Version if required ###
 patch=$(echo ${version_parts[2]} | cut -d '-' -f 1)
 
-
+clear
 echo $(tput setaf 3)
 echo "##################################################"
 echo "                      Update"
@@ -421,12 +421,21 @@ if [[ $continue == "y" ]] || [[ $continue == "Y" ]]; then
 	
 	### Stop each BOT and Copy ProfitTrailer.jar to each instance, then restart it ###
 	for ((i=1; i<=PTinstances; i++)); do
+
+		### Get the current status of the process ####
+		status=$(pm2 info "${name[$i]}" | grep 'status' | sed -n '1p' | cut -d '/' -f 2-)
+
+				rename=$(pm2 info "$newname" | grep 'exec cwd' | sed -n '1p' | cut -d '/' -f 2-)
+				### remove any leading or trailing spaces or tabs and also column bars from pm2 output by reversing and cutting ###
+				nowhitespace=$(echo "$rename" | xargs | rev | cut -d ' ' -f 2- | rev )
+				path[$i]=/"$nowhitespace"
+
 		
 		### If the user is running this script inside their bots folder we avoid deleting the jar during cleanup ###
 		if [[ $DIR == "${path[$i]}" ]]; then
 			loc=Y
 		fi
-	
+
 		echo
 		echo "$(tput setaf 2) === Stopping ${name[$i]} === $(tput sgr0)"
 		pm2 stop "${name[$i]}"
@@ -437,9 +446,15 @@ if [[ $continue == "y" ]] || [[ $continue == "Y" ]]; then
 		cp "${path[$i]}"/data/ptdb.db "$DIR"/updatescript/"$(date +%m%d_%H%M)"/"${name[$i]}"/ptdb.db
 		echo
 		echo "$(tput setaf 2) === Restarting ${name[$i]} === $(tput sgr0)"
-		pm2 reload "${name[$i]}"
+
+		### Reload only if process was online ###
+		if [[ $status = *online* ]]; then
+			pm2 reload "${name[$i]}"
+			echo "$(tput setaf 2) === Pausing 30 seconds while ${name[$i]} loads === $(tput sgr0)"
+			sleep 30
+		fi
 	done
-			
+#clear			
 	### Remove downloaded Files ###
 	echo
 	echo "$(tput setaf 2) === Cleaning up === $(tput sgr0)"
