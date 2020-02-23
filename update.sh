@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ### Linux .jar Update Script for ProfitTrailer
-### LAST UPDATED 24 Apr 2019
+### LAST UPDATED 20 Feb 2020
 
 ### Place this script in the root folder where all your individual bot folders are and then execute it.
 ### For simplicity each ProfitTrailer.jar file should be nested exactly one subfolder.
@@ -424,12 +424,6 @@ if [[ $continue == "y" ]] || [[ $continue == "Y" ]]; then
 
 		### Get the current status of the process ####
 		status=$(pm2 info "${name[$i]}" | grep 'status' | sed -n '1p' | cut -d '/' -f 2-)
-
-				rename=$(pm2 info "$newname" | grep 'exec cwd' | sed -n '1p' | cut -d '/' -f 2-)
-				### remove any leading or trailing spaces or tabs and also column bars from pm2 output by reversing and cutting ###
-				nowhitespace=$(echo "$rename" | xargs | rev | cut -d ' ' -f 2- | rev )
-				path[$i]=/"$nowhitespace"
-
 		
 		### If the user is running this script inside their bots folder we avoid deleting the jar during cleanup ###
 		if [[ $DIR == "${path[$i]}" ]]; then
