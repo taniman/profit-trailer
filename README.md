@@ -1,7 +1,7 @@
 # ProfitTrailer
 The most advanced crypto trading bot
 
-### Live Support
+# Live Support
 https://discord.gg/eakB23b
 
 # Check out the wiki
