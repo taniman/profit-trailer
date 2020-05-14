@@ -1,13 +1,11 @@
 # ProfitTrailer
-We trail the trends!
+The most advanced crypto trading bot
 
-# Join the Discord group
-If you have questions after reading the readme
-### Main Channel
+### Live Support
 https://discord.gg/eakB23b
 
 # Check out the wiki
 https://wiki.profittrailer.com  
 
 # How to run
-https://wiki.profittrailer.com/doku.php/instructions  
+https://wiki.profittrailer.com/doku.php?id=quick_instructions  
